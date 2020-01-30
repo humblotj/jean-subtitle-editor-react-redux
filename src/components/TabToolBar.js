@@ -1,7 +1,8 @@
 import React from "react";
 import PropTypes from "prop-types";
 import { makeStyles } from "@material-ui/core/styles";
-import { AppBar, Tabs, Tab, Typography } from "@material-ui/core";
+import { AppBar, Tabs, Tab, Typography, Box } from "@material-ui/core";
+import CommonTab from "../containers/SubtitleEditor/ToolBar/CommonTab";
 
 function TabPanel(props) {
   const { value, index, item, ...other } = props;
@@ -59,15 +60,22 @@ export default function TabToolbar(props) {
             />
           ))}
         </Tabs>
-        {bars.map((item, index) => (
-          <TabPanel
-            key={item.label}
-            value={value}
-            index={index}
-            item={item}
-            style={{ overflowX: "auto" }}
-          ></TabPanel>
-        ))}
+        <Box
+          display="flex"
+          flexDirection="row"
+          justifyContent="space-between"
+          style={{ overflowX: "auto" }}
+        >
+          {bars.map((item, index) => (
+            <TabPanel
+              key={item.label}
+              value={value}
+              index={index}
+              item={item}
+            ></TabPanel>
+          ))}
+          <CommonTab />
+        </Box>
       </AppBar>
     </div>
   );

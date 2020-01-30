@@ -84,7 +84,7 @@ class PlayerControls extends React.Component {
 
   render() {
     let { progress, paused, currentTime, duration, audioVolume } = this.props;
-
+    
     return (
       <div>
         <Slider

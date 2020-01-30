@@ -15,7 +15,6 @@ class VideoPlayer extends React.Component {
   }
 
   componentDidMount() {
-    console.log("viid");
     const that = this;
     this.player = videojs(
       this.videoNode.current,

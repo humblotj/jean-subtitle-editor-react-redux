@@ -69,3 +69,9 @@ export const setIndexActive = indexActive => {
     dispatch({ type: "SET_INDEX_ACTIVE", indexActive });
   };
 };
+
+export const setPreviousState = previousState => {
+  return dispatch => {
+    dispatch({ type: "SET_PREVIOUS_STATE", previousState });
+  };
+};

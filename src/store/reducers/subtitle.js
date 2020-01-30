@@ -6,12 +6,7 @@ const initialState = {
   preview: [],
   indexActive: null,
   previousIndexActive: null,
-  previousState: null,
-  dataUndoArray: [],
-  dataRedoArray: [],
-  undoLimit: 5,
-  showUndo: false,
-  showRedo: false,
+  previousState: null
 };
 
 const subtitleReducer = (state = initialState, action) => {
@@ -66,6 +61,11 @@ const subtitleReducer = (state = initialState, action) => {
         ...state,
         previousIndexActive: state.indexActive,
         indexActive: action.indexActive
+      };
+    case "SET_PREVIOUS_STATE":
+      return {
+        ...state,
+        previousState: action.previousState
       };
     default:
       return state;

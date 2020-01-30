@@ -159,7 +159,6 @@ class Audiovizualiser extends React.Component {
       if (this.props.onTimeUpdate) {
         this.props.player.off("timeupdate", this.props.onTimeUpdate);
         this.props.setOnTimeUpdate(null);
-        console.log("off");
       }
 
       this.props.player.pause();
@@ -341,30 +340,31 @@ class Audiovizualiser extends React.Component {
       timeStamp,
       script,
       scriptTranslation,
-      preview
+      preview,
+      previousState
     } = this.props;
 
-    if (this.previousState !== null && indexActive !== null) {
+    if (previousState !== null && indexActive !== null) {
       const iTmp = indexActive;
       if (
-        this.previousState.script === script[iTmp] &&
-        this.previousState.scriptTranslation === scriptTranslation[iTmp] &&
-        this.previousState.timeStamp.startMs === timeStamp[iTmp].startMs &&
-        this.previousState.timeStamp.endMs === timeStamp[iTmp].endMs
+        previousState.script === script[iTmp] &&
+        previousState.scriptTranslation === scriptTranslation[iTmp] &&
+        previousState.timeStamp.startMs === timeStamp[iTmp].startMs &&
+        previousState.timeStamp.endMs === timeStamp[iTmp].endMs
       ) {
         console.log("ok");
       } else {
-        // this.doBis(iTmp);
+        EventEmitter.dispatch("doBis", iTmp);
         console.log("do");
       }
     }
 
-    this.previousState = {
+    this.props.setPreviousState({
       timeStamp: JSON.parse(JSON.stringify(timeStamp[index])),
       script: script[index],
       scriptTranslation: scriptTranslation[index],
       preview: JSON.parse(JSON.stringify(preview[index]))
-    };
+    });
 
     if (this.wavesurfer) {
       if (
@@ -439,7 +439,8 @@ const mapStateToProps = state => {
     indexActive: state.subtitle.indexActive,
     player: state.video.player,
     timeout: state.video.timeout,
-    onTimeUpdate: state.video.onTimeUpdate
+    onTimeUpdate: state.video.onTimeUpdate,
+    previousState: state.subtitle.previousState
   };
 };
 
@@ -454,7 +455,9 @@ const mapDispatchToProps = dispatch => {
     setOnTimeUpdate: onTimeUpdate =>
       dispatch(actions.setOnTimeUpdate(onTimeUpdate)),
     setProgress: (currentTime, progress) =>
-      dispatch(actions.setProgress(currentTime, progress))
+      dispatch(actions.setProgress(currentTime, progress)),
+    setPreviousState: previousState =>
+      dispatch(actions.setPreviousState(previousState))
   };
 };
 

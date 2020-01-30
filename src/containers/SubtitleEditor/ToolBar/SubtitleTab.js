@@ -31,6 +31,7 @@ import * as actions from "../../../store/actions/index";
 import * as SubtitleParser from "../../../Utils/SubtitleParser";
 import * as Translate from "../../../Utils/Translate";
 import { EventEmitter } from "../../../Utils/events";
+import CommonTab from "./CommonTab";
 
 const languagesSupported = [
   { value: "ko", viewValue: "Korean" },
@@ -151,6 +152,7 @@ class SubtitleTab extends React.Component {
   };
 
   handleSubtitleData = data => {
+    EventEmitter.dispatch("do", null);
     const timeStamp = data.map(line => ({
       startMs: line.startTime,
       endMs: line.endTime
@@ -222,6 +224,8 @@ class SubtitleTab extends React.Component {
   };
 
   handleTranslationData = data => {
+    EventEmitter.dispatch("do", null);
+
     let timeStamp = data.map(line => ({
       startMs: line.startTime,
       endMs: line.endTime
@@ -365,7 +369,7 @@ class SubtitleTab extends React.Component {
         display="flex"
         flexDirection="row"
         alignItems="center"
-        style={{ height: "60px", width: "max-content" }}
+        style={{ height: "60px", width: "max-content", minWidth: "100%" }}
       >
         <Button ref={this.menuSubtitle} onClick={this.toggleSubtitle}>
           <Box display="flex" flexDirection="column" alignItems="center">

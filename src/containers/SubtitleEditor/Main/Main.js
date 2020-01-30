@@ -5,7 +5,7 @@ import Autosizer from "react-virtualized-auto-sizer";
 
 import * as actions from "../../../store/actions/index";
 import Audiovizualiser from "./Audiovizualiser/Audiovizualiser";
-import ScriptLine from "../../../components/ScriptLine/ScriptLine";
+import ScriptLine from "./ScriptLine/ScriptLine";
 
 class Main extends React.Component {
   renderRow = props => {

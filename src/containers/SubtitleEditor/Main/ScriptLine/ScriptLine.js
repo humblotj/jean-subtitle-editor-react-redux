@@ -7,9 +7,9 @@ import {
 } from "@material-ui/icons";
 import MaskedInput from "react-text-mask";
 
-import * as actions from "../../store/actions/index";
-import * as SubtitleParser from "../../Utils/SubtitleParser";
-import { EventEmitter } from "../../Utils/events";
+import * as actions from "../../../../store/actions/index";
+import * as SubtitleParser from "../../../../Utils/SubtitleParser";
+import { EventEmitter } from "../../../../Utils/events";
 import classes from "./ScriptLine.module.css";
 
 class ScriptLine extends React.Component {
@@ -157,7 +157,43 @@ class ScriptLine extends React.Component {
 
   lineClick = () => {
     if (this.props.index !== this.props.indexActive) {
-      EventEmitter.dispatch("indexActiveChange", this.props.index);
+      if (this.props.wavesurfer) {
+        EventEmitter.dispatch("indexActiveChange", this.props.index);
+      } else {
+        const {
+          index,
+          indexActive,
+          timeStamp,
+          script,
+          scriptTranslation,
+          preview,
+          previousState
+        } = this.props;
+
+        if (previousState !== null && indexActive !== null) {
+          const iTmp = indexActive;
+          if (
+            previousState.script === script[iTmp] &&
+            previousState.scriptTranslation === scriptTranslation[iTmp] &&
+            previousState.timeStamp.startMs === timeStamp[iTmp].startMs &&
+            previousState.timeStamp.endMs === timeStamp[iTmp].endMs
+          ) {
+          } else {
+            EventEmitter.dispatch("doBis", iTmp);
+            // this.doBis(iTmp);
+            console.log("do");
+          }
+        }
+
+        this.props.setPreviousState({
+          timeStamp: JSON.parse(JSON.stringify(timeStamp[index])),
+          script: script[index],
+          scriptTranslation: scriptTranslation[index],
+          preview: JSON.parse(JSON.stringify(preview[index]))
+        });
+
+        this.props.setIndexActive(index);
+      }
     }
   };
 
@@ -168,8 +204,7 @@ class ScriptLine extends React.Component {
       indexActive,
       script,
       scriptTranslation,
-      paused,
-      sentence
+      paused
     } = this.props;
     const { startTime, endTime } = this.state;
 
@@ -262,11 +297,12 @@ const mapStateToProps = state => {
     timeStamp: state.subtitle.timeStamp,
     script: state.subtitle.script,
     scriptTranslation: state.subtitle.scriptTranslation,
+    preview: state.subtitle.preview,
     wavesurfer: state.video.wavesurfer,
     player: state.video.player,
-    wavesurfer: state.video.wavesurfer,
     rate: state.video.rate,
-    timeout: state.video.timeout
+    timeout: state.video.timeout,
+    previousState: state.subtitle.previousState
   };
 };
 
@@ -275,10 +311,14 @@ const mapDispatchToProps = dispatch => {
     updateTimestamp: timeStamp => dispatch(actions.updateTimestamp(timeStamp)),
     updateScript: script => dispatch(actions.updateScript(script)),
     updateScriptTranslation: scriptTranslation =>
-      dispatch(actions.updateScript(scriptTranslation)),
+      dispatch(actions.updateScriptTranslation(scriptTranslation)),
     setTimeout: timeout => dispatch(actions.setTimeout(timeout)),
     setOnTimeUpdate: onTimeUpdate =>
-      dispatch(actions.setOnTimeUpdate(onTimeUpdate))
+      dispatch(actions.setOnTimeUpdate(onTimeUpdate)),
+    setIndexActive: indexActive =>
+      dispatch(actions.setIndexActive(indexActive)),
+    setPreviousState: previousState =>
+      dispatch(actions.setPreviousState(previousState))
   };
 };
 

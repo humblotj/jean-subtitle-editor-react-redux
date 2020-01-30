@@ -8,7 +8,7 @@ const initialState = {
   paused: true,
   duration: "",
   durationSeconds: 0,
-  currentTime: "",
+  currentTime: "00:00",
   progress: 0,
   audioVolume: 0.25,
   timeout: null,

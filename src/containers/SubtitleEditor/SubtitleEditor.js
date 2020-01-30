@@ -3,7 +3,7 @@ import { MuiThemeProvider, createMuiTheme } from "@material-ui/core/styles";
 import { grey, indigo } from "@material-ui/core/colors";
 
 import TabToolbar from "../../components/TabToolBar";
-import HomeTab from "./ToolBar/HomeTab";
+// import HomeTab from "./ToolBar/HomeTab";
 import VideoTab from "./ToolBar/VideoTab";
 import SimpleSnackbar from "../../components/SimpleSnackBar";
 import FixedDrawer from "../../components/FixedDrawer";

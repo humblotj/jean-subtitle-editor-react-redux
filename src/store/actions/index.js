@@ -19,5 +19,6 @@ export {
   updateScript,
   updateScriptTranslation,
   updatePreview,
-  setIndexActive
+  setIndexActive,
+  setPreviousState
 } from "./subtitle.js";
