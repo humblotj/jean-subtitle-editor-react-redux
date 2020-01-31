@@ -120,13 +120,19 @@ class CommonTab extends React.Component {
         this.setState({ showRedo: true });
       }
 
-      //   this.loadRegions();
+      EventEmitter.dispatch("refreshRegion", null);
     }
   };
 
   redo = () => {
     if (this.dataRedoArray.length !== 0) {
-      const { timeStamp, script, scriptTranslation, preview } = this.props;
+      const {
+        timeStamp,
+        script,
+        scriptTranslation,
+        preview,
+        indexActive
+      } = this.props;
 
       this.dataUndoArray.push({
         timeStamp: JSON.parse(JSON.stringify(timeStamp)),
@@ -144,14 +150,13 @@ class CommonTab extends React.Component {
       );
 
       if (this.dataRedoArray.length === 0) {
-        // this.showRedo = false;
         this.setState({ showRedo: false });
       }
-      //   if (this.indexActive > this.timeStamp.length - 1) {
-      //     this.indexActive = this.timeStamp.length
-      //       ? this.timeStamp.length - 1
-      //       : null;
-      //   }
+      if (indexActive > timeStamp.length - 1) {
+        this.props.setIndexActive(
+          timeStamp.length ? this.timeStamp.length - 1 : null
+        );
+      }
     }
 
     if (this.dataUndoArray.length > 0) {
@@ -159,7 +164,8 @@ class CommonTab extends React.Component {
     } else {
       this.setState({ showUndo: false });
     }
-    // this.loadRegions();
+
+    EventEmitter.dispatch("refreshRegion", null);
   };
 
   saveProject = () => {
@@ -274,7 +280,8 @@ const mapStateToProps = state => {
     previousState: state.subtitle.previousState,
     projectKey: state.subtitle.projectKey,
     projectName: state.subtitle.projectName,
-    videoId: state.video.videoId
+    videoId: state.video.videoId,
+    indexActive: state.subtitle.indexActive
   };
 };
 
@@ -290,7 +297,8 @@ const mapDispatchToProps = dispatch => {
           preview
         )
       ),
-    setProjectKey: projectKey => dispatch(actions.setProjectKey(projectKey))
+    setProjectKey: projectKey => dispatch(actions.setProjectKey(projectKey)),
+    setIndexActive: indexActive => dispatch(actions.setIndexActive(indexActive))
   };
 };
 

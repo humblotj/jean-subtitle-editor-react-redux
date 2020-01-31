@@ -65,6 +65,7 @@ class SubtitleTab extends React.Component {
 
   shouldComponentUpdate(nextProps, nextState) {
     if (
+      this.props.timeStamp === nextProps.timeStamp &&
       this.state.openMenuSubtitle === nextState.openMenuSubtitle &&
       this.state.openMenuTranslation === nextState.openMenuTranslation &&
       this.state.openExportSubtitle === nextState.openExportSubtitle &&

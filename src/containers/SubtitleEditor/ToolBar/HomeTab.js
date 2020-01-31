@@ -36,7 +36,8 @@ class HomeTab extends React.Component {
     if (
       this.state.projectKeyTmp === nextState.projectKeyTmp &&
       this.props.projectKey === nextProps.projectKey &&
-      this.props.projectName === nextProps.projectName
+      this.props.projectName === nextProps.projectName &&
+      this.props.timeStamp === nextProps.timeStamp
     ) {
       return false;
     }

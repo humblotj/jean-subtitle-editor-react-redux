@@ -17,6 +17,7 @@ import FixedDrawer from "../../components/FixedDrawer";
 import Sidenav from "./Sidenav/Sidenav";
 import Main from "./Main/Main";
 import SubtitleTab from "./ToolBar/SubtitleTab";
+import EditTab from "./ToolBar/EditTab";
 
 const theme = createMuiTheme({
   palette: {
@@ -28,7 +29,8 @@ const theme = createMuiTheme({
 const bars = [
   { label: "Home", component: HomeTab },
   { label: "Video", component: VideoTab },
-  { label: "Subtitle", component: SubtitleTab }
+  { label: "Subtitle", component: SubtitleTab },
+  { label: "Edit", component: EditTab }
 ];
 
 class SubtitleEditor extends React.Component {
