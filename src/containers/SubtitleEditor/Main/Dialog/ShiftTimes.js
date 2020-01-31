@@ -16,12 +16,7 @@ import * as SubtitleParser from "../../../../Utils/SubtitleParser";
 const useStyles = makeStyles(theme => ({
   timeContainer: {
     width: "56px",
-    height: "18px",
-
-    border: "none",
-    overflow: "auto",
-    outline: "none",
-    boxShadow: "none"
+    height: "18px"
   }
 }));
 
@@ -129,7 +124,6 @@ export default function ShiftTimes(props) {
           variant="outlined"
           color="primary"
           onClick={shiftTimes}
-          style={{ display: "block" }}
         >
           Shift Times
         </Button>

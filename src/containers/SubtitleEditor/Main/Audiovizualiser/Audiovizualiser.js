@@ -60,7 +60,7 @@ class Audiovizualiser extends React.Component {
     });
 
     this.wavesurfer.on("interaction", e => {
-      // this.seekTo.emit(e * 100);
+      this.seekTo.emit(e * 100);
     });
 
     this.wavesurfer.on("region-updated", e => {
