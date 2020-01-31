@@ -4,6 +4,7 @@ import { connect } from "react-redux";
 import * as actions from "../../../store/actions/index";
 import VideoPlayer from "./VideoPlayer";
 import PlayerControls from "./PlayerControls";
+import ScriptPreview from "./ScriptPreview";
 
 class Sidenav extends React.Component {
   constructor() {
@@ -49,6 +50,7 @@ class Sidenav extends React.Component {
       <div>
         <VideoPlayer options={options} />
         <PlayerControls />
+        <ScriptPreview />
       </div>
     );
   }
