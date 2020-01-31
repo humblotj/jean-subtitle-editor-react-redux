@@ -1,10 +1,15 @@
 import React from "react";
 import { connect } from "react-redux";
 import { Button, Box, Divider } from "@material-ui/core";
-import { Redo as RedoIcon, Undo as UndoIcon } from "@material-ui/icons";
+import {
+  Redo as RedoIcon,
+  Undo as UndoIcon,
+  Save as SaveIcon
+} from "@material-ui/icons";
 
 import * as actions from "../../../store/actions/index";
 import { EventEmitter } from "../../../Utils/events";
+import { databaseRef } from "../../../firebase";
 
 class CommonTab extends React.Component {
   constructor() {
@@ -19,51 +24,46 @@ class CommonTab extends React.Component {
       showRedo: false
     };
 
-    EventEmitter.subscribe("do", () => {
-      this.do();
-    });
-
-    EventEmitter.subscribe("doBis", index => {
-      this.doBis(index);
-    });
+    EventEmitter.subscribe("do", this.do);
+    EventEmitter.subscribe("doBis", this.doBis);
   }
-  //   shouldComponentUpdate(nextProps, nextState) {
-  //   }
+  shouldComponentUpdate(nextProps, nextState) {
+    if (
+      this.state.showUndo === nextState.showUndo &&
+      this.state.showRedo === nextState.showRedo &&
+      this.props.timeStamp === nextProps.timeStamp
+    ) {
+      return false;
+    }
+    return true;
+  }
+
+  componentWillUnmount() {
+    EventEmitter.removeListener("do", this.do);
+    EventEmitter.removeListener("doBis", this.doBis);
+  }
 
   do = () => {
     this.dataRedoArray = [];
-    // this.showRedo = false;
 
     if (this.dataUndoArray.length === this.undoLimit) {
       this.dataUndoArray.reverse().pop();
       this.dataUndoArray.reverse();
     }
-    // this.dataUndoArray.push({
-    //   timeStamp: JSON.parse(JSON.stringify(this.timeStamp)),
-    //   script: this.script.slice(),
-    //   scriptTranslation: this.scriptTranslation.slice(),
-    //   preview: this.preview ? JSON.parse(JSON.stringify(this.preview)) : []
-    // });
+
     const { timeStamp, script, scriptTranslation, preview } = this.props;
-    // this.dataUndoArray.push({
-    //   timeStamp,
-    //   script,
-    //   scriptTranslation,
-    //   preview
-    // });
+
     this.dataUndoArray.push({
       timeStamp: JSON.parse(JSON.stringify(timeStamp)),
       script: script.slice(),
       scriptTranslation: scriptTranslation.slice(),
       preview: JSON.parse(JSON.stringify(preview))
     });
-    // this.showUndo = true;
     this.setState({ showUndo: true, showRedo: false });
   };
 
   doBis = index => {
     this.dataRedoArray = [];
-    // this.showRedo = false;
 
     if (this.dataUndoArray.length === this.undoLimit) {
       this.dataUndoArray.reverse().pop();
@@ -93,26 +93,13 @@ class CommonTab extends React.Component {
         ? JSON.parse(JSON.stringify(this.props.preview))
         : []
     });
-    // this.showUndo = true;
     this.setState({ showUndo: true, showRedo: false });
   };
 
   undo = () => {
-    // this.showRedo = true;
     if (this.dataUndoArray.length !== 0) {
-      //   this.dataRedoArray.push({
-      //     timeStamp: JSON.parse(JSON.stringify(this.timeStamp)),
-      //     script: this.script.slice(),
-      //     scriptTranslation: this.scriptTranslation.slice(),
-      //     preview: this.preview ? JSON.parse(JSON.stringify(this.preview)) : []
-      //   });
       const { timeStamp, script, scriptTranslation, preview } = this.props;
-      //   this.dataRedoArray.push({
-      //     timeStamp,
-      //     script,
-      //     scriptTranslation,
-      //     preview
-      //   });
+
       this.dataRedoArray.push({
         timeStamp: JSON.parse(JSON.stringify(timeStamp)),
         script: script.slice(),
@@ -128,46 +115,26 @@ class CommonTab extends React.Component {
       );
 
       if (this.dataUndoArray.length === 0) {
-        // this.showUndo = false;
         this.setState({ showUndo: false, showRedo: true });
       } else {
         this.setState({ showRedo: true });
       }
-      //   if (this.indexActive > this.timeStamp.length - 1) {
-      //     this.indexActive = this.timeStamp.length
-      //       ? this.timeStamp.length - 1
-      //       : null;
-      //   }
+
       //   this.loadRegions();
     }
   };
 
   redo = () => {
     if (this.dataRedoArray.length !== 0) {
-      //   this.dataUndoArray.push({
-      //     timeStamp: JSON.parse(JSON.stringify(this.timeStamp)),
-      //     script: this.script.slice(),
-      //     scriptTranslation: this.scriptTranslation.slice(),
-      //     preview: JSON.parse(JSON.stringify(this.preview))
-      //   });
       const { timeStamp, script, scriptTranslation, preview } = this.props;
-      //   this.dataUndoArray.push({
-      //     timeStamp,
-      //     script,
-      //     scriptTranslation,
-      //     preview
-      //   });
+
       this.dataUndoArray.push({
         timeStamp: JSON.parse(JSON.stringify(timeStamp)),
         script: script.slice(),
         scriptTranslation: scriptTranslation.slice(),
         preview: JSON.parse(JSON.stringify(preview))
       });
-      //   const currentData = this.dataRedoArray.pop();
-      //   this.timeStamp = currentData.timeStamp;
-      //   this.script = currentData.script;
-      //   this.scriptTranslation = currentData.scriptTranslation;
-      //   this.preview = currentData.preview;
+
       const currentData = this.dataRedoArray.pop();
       this.props.translationSelected(
         currentData.timeStamp,
@@ -195,10 +162,76 @@ class CommonTab extends React.Component {
     // this.loadRegions();
   };
 
+  saveProject = () => {
+    try {
+      this.storeData();
+      this.lastSaveDate = new Date();
+      console.log("Project Saved");
+    } catch (error) {
+      console.error(error);
+      console.log("Save Failed");
+    }
+  };
+
+  storeData = () => {
+    const {
+      projectKey,
+      videoId,
+      projectName,
+      timeStamp,
+      script,
+      scriptTranslation
+    } = this.props;
+
+    const data = {
+      videoId,
+      projectName,
+      timeStamp,
+      script,
+      scriptTranslation
+    };
+
+    if (projectKey === "") {
+      const id = databaseRef
+        .child("subtitles")
+        .push(data)
+        .getKey();
+      this.props.setProjectKey(id);
+      this.changeURL(id);
+    } else {
+      databaseRef
+        .child("subtitles")
+        .child(projectKey)
+        .set(data);
+      this.changeURL(projectKey);
+    }
+  };
+
+  changeURL = projectKey => {
+    EventEmitter.dispatch("changeURL", projectKey);
+  };
+
   render() {
     const { showUndo, showRedo } = this.state;
     return (
       <Box display="flex" flexDirection="row" style={{ height: "60px" }}>
+        <Divider orientation="vertical" />
+        <Button
+          onClick={this.saveProject}
+          disabled={!this.props.timeStamp.length}
+        >
+          <Box display="flex" flexDirection="column" alignItems="center">
+            <SaveIcon />
+            <span
+              style={{
+                letterSpacing: "-0.5px",
+                textTransform: "initial"
+              }}
+            >
+              Save Project
+            </span>
+          </Box>
+        </Button>
         <Divider orientation="vertical" />
         <Button onClick={this.undo} disabled={!showUndo}>
           <Box display="flex" flexDirection="column" alignItems="center">
@@ -238,7 +271,10 @@ const mapStateToProps = state => {
     script: state.subtitle.script,
     scriptTranslation: state.subtitle.scriptTranslation,
     preview: state.subtitle.preview,
-    previousState: state.subtitle.previousState
+    previousState: state.subtitle.previousState,
+    projectKey: state.subtitle.projectKey,
+    projectName: state.subtitle.projectName,
+    videoId: state.video.videoId
   };
 };
 
@@ -253,7 +289,8 @@ const mapDispatchToProps = dispatch => {
           scriptTranslation,
           preview
         )
-      )
+      ),
+    setProjectKey: projectKey => dispatch(actions.setProjectKey(projectKey))
   };
 };
 

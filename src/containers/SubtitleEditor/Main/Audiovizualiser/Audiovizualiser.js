@@ -21,22 +21,8 @@ class Audiovizualiser extends React.Component {
       progress: 100
     };
 
-    EventEmitter.subscribe("indexActiveChange", event => {
-      this.pause();
-      this.setIndexActive(event);
-      const duration = this.wavesurfer
-        ? this.wavesurfer.getDuration()
-        : this.props.player
-        ? this.props.player.getDuration()
-        : null;
-      if (duration) {
-        this.seekTo(this.props.timeStamp[event].startMs / 10 / duration);
-      }
-    });
-
-    EventEmitter.subscribe("refreshRegion", () => {
-      this.timeoutLoadRegions();
-    });
+    EventEmitter.subscribe("indexActiveChange", this.onIndexActiveChange);
+    EventEmitter.subscribe("refreshRegion", this.timeoutLoadRegions);
   }
 
   componentDidMount() {
@@ -136,6 +122,16 @@ class Audiovizualiser extends React.Component {
       return false;
     }
     return true;
+  }
+
+  componentWillUnmount() {
+    if (this.wavesurfer) {
+      this.wavesurfer.destroy();
+      this.wavesurfer = null;
+      this.props.setWavesurfer(null);
+    }
+    EventEmitter.removeListener("indexActiveChange", this.onIndexActiveChange);
+    EventEmitter.removeListener("refreshRegion", this.timeoutLoadRegions);
   }
 
   seekTo = progress => {
@@ -391,19 +387,24 @@ class Audiovizualiser extends React.Component {
     this.props.setIndexActive(index);
   };
 
+  onIndexActiveChange = event => {
+    this.pause();
+    this.setIndexActive(event);
+    const duration = this.wavesurfer
+      ? this.wavesurfer.getDuration()
+      : this.props.player
+      ? this.props.player.getDuration()
+      : null;
+    if (duration) {
+      this.seekTo(this.props.timeStamp[event].startMs / 10 / duration);
+    }
+  };
+
   componentDidUpdate(prevProps) {
     if (this.wavesurfer) {
       if (prevProps.url !== this.props.url) {
         this.wavesurfer.load(this.props.url);
       }
-    }
-  }
-
-  componentWillUnmount() {
-    if (this.wavesurfer) {
-      this.wavesurfer.destroy();
-      this.wavesurfer = null;
-      this.props.setWavesurfer(null);
     }
   }
 

@@ -1,3 +1,15 @@
+export const setProjectKey = projectKey => {
+  return dispatch => {
+    dispatch({ type: "SET_PROJECT_KEY", projectKey });
+  };
+};
+
+export const setProjectName = projectName => {
+  return dispatch => {
+    dispatch({ type: "SET_PROJECT_NAME", projectName });
+  };
+};
+
 export const subtitleSelected = (
   timeStamp,
   script,
@@ -73,5 +85,24 @@ export const setIndexActive = indexActive => {
 export const setPreviousState = previousState => {
   return dispatch => {
     dispatch({ type: "SET_PREVIOUS_STATE", previousState });
+  };
+};
+
+export const loadProject = (
+  projectKey,
+  projectName,
+  timeStamp,
+  script,
+  scriptTranslation
+) => {
+  return dispatch => {
+    dispatch({
+      type: "LOAD_PROJECT",
+      projectKey,
+      projectName,
+      timeStamp,
+      script,
+      scriptTranslation
+    });
   };
 };

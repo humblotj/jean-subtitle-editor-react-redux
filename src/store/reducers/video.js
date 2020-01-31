@@ -3,6 +3,7 @@ const initialState = {
   wavesurfer: null,
   rate: 1,
   url: "",
+  youtubeLink: "https://www.youtube.com/watch?v=2PjZAeiU7uM",
   videoType: "",
   videoId: "",
   paused: true,
@@ -32,6 +33,11 @@ const videoReducer = (state = initialState, action) => {
         videoType: "video/mp4",
         url: action.url,
         rate: 1
+      };
+    case "SET_YOUTUBE_LINK":
+      return {
+        ...state,
+        youtubeLink: action.youtubeLink
       };
     case "SET_PLAYER":
       return {

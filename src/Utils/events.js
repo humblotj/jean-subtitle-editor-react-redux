@@ -7,6 +7,15 @@ const EventEmitter = {
   subscribe: function(event, callback) {
     if (!this._events[event]) this._events[event] = [];
     this._events[event].push(callback);
+  },
+  removeListener(event, callback) {
+    // remove listeners
+    if (this._events[event].length) {
+      const index = this._events[event].indexOf(callback);
+      if (index) {
+        delete this._events[event][index];
+      }
+    }
   }
 };
 

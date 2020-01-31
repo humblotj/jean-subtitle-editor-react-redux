@@ -6,6 +6,7 @@ import * as serviceWorker from "./serviceWorker";
 import { Provider } from "react-redux";
 import { createStore, applyMiddleware, compose, combineReducers } from "redux";
 import thunk from "redux-thunk";
+import { BrowserRouter } from "react-router-dom";
 import "typeface-roboto";
 
 import snackBarReducer from "./store/reducers/snackbar";
@@ -30,7 +31,9 @@ const store = createStore(
 
 const app = (
   <Provider store={store}>
-    <App />
+    <BrowserRouter>
+      <App />
+    </BrowserRouter>
   </Provider>
 );
 

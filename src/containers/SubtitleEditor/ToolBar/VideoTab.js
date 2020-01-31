@@ -8,10 +8,9 @@ import {
   FileCopy as FileCopyIcon
 } from "@material-ui/icons";
 import copy from "copy-to-clipboard";
-import axios from "axios";
-import * as xml2js from "xml2js";
 
 import * as actions from "../../../store/actions/index";
+import { EventEmitter } from "../../../Utils/events";
 
 class VideoTab extends React.Component {
   constructor() {
@@ -47,7 +46,7 @@ class VideoTab extends React.Component {
   };
 
   onPlayYTLink = () => {
-    const youtubeLink = this.linkInput.current.children[0].value;
+    const { youtubeLink } = this.props;
     if (this.isYoutubeLink(youtubeLink)) {
       let videoId;
       if (youtubeLink.startsWith("https://www.youtube.com/watch?v=")) {
@@ -56,17 +55,7 @@ class VideoTab extends React.Component {
       } else {
         videoId = youtubeLink.substring(17);
       }
-      this.storeVideo(videoId, videoId)
-        .then(response => {
-          const downloadURL = response.data;
-          if (this.propsurl !== downloadURL) {
-            this.props.videoSelected(videoId, "video/mp4", downloadURL);
-            this.displaySubtitles(videoId);
-          }
-        })
-        .catch(error => {
-          console.error(error);
-        });
+      EventEmitter.dispatch("playYTLink", videoId);
     } else {
       this.props.openSnackbar("This is not a Youtube Link.");
     }
@@ -77,44 +66,6 @@ class VideoTab extends React.Component {
       youtubeLink.startsWith("https://www.youtube.com/watch?v=") ||
       youtubeLink.startsWith("https://youtu.be/")
     );
-  };
-
-  storeVideo(videoId, name) {
-    const url =
-      "https://us-central1-jean-subtitle-editor.cloudfunctions.net/youtubedl";
-    return axios.post(url, null, {
-      params: {
-        id: videoId,
-        name
-      }
-    });
-  }
-
-  displaySubtitles(videoId) {
-    const url = "https://video.google.com/timedtext";
-    axios
-      .get(url, {
-        params: {
-          type: "list",
-          v: videoId
-        }
-      })
-      .then(result => this.parseXml(result.data));
-  }
-
-  parseXml = xmlStr => {
-    const parser = new xml2js.Parser();
-    parser.parseString(xmlStr, (err, result) => {
-      let list = [];
-      if (result.transcript_list.track) {
-        list = result.transcript_list.track.map(item => ({
-          name: item.$.name,
-          lang_code: item.$.lang_code,
-          lang_translated: item.$.lang_translated
-        }));
-      }
-      this.props.setSubtitleList(list);
-    });
   };
 
   copyInput = () => {
@@ -171,20 +122,28 @@ class VideoTab extends React.Component {
         <form noValidate autoComplete="off">
           <Input
             placeholder="Youtube Link"
-            defaultValue="https://www.youtube.com/watch?v=2PjZAeiU7uM"
+            value={this.props.youtubeLink}
+            onChange={event =>
+              this.props.setYoutubeLink(event.currentTarget.value)
+            }
             ref={this.linkInput}
             endAdornment={
               <IconButton
                 aria-label="delete"
                 size="small"
-                onClick={() => (this.linkInput.current.children[0].value = "")}
+                onClick={() => this.props.setYoutubeLink("")}
               >
                 <CloseIcon fontSize="inherit" />
               </IconButton>
             }
           />
         </form>
-        <IconButton aria-label="copy" size="small" onClick={this.copyInput}>
+        <IconButton
+          aria-label="copy"
+          size="small"
+          onClick={this.copyInput}
+          disabled={!this.props.youtubeLink}
+        >
           <FileCopyIcon />
         </IconButton>
         <Divider orientation="vertical" />
@@ -197,13 +156,16 @@ const mapStateToProps = state => {
   return {
     player: state.video.player,
     wavesurfer: state.video.wavesurfer,
-    url: state.video.url
+    url: state.video.url,
+    youtubeLink: state.video.youtubeLink
   };
 };
 
 const mapDispatchToProps = dispatch => {
   return {
     openSnackbar: message => dispatch(actions.openSnackbar(message)),
+    setYoutubeLink: youtubeLink =>
+      dispatch(actions.setYoutubeLink(youtubeLink)),
     videoSelected: (videoId, videoType, url) =>
       dispatch(actions.videoSelected(videoId, videoType, url)),
     setSubtitleList: subtitleList =>

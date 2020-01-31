@@ -10,6 +10,12 @@ export const yTLinkPlayed = (videoId, url) => {
   };
 };
 
+export const setYoutubeLink = youtubeLink => {
+  return dispatch => {
+    dispatch({ type: "SET_YOUTUBE_LINK", youtubeLink });
+  };
+};
+
 export const setPlayer = player => {
   return dispatch => {
     dispatch({ type: "SET_PLAYER", player });

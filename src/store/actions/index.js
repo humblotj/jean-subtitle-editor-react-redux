@@ -2,6 +2,7 @@ export { openSnackbar, closeSnackbar } from "./snackbar.js";
 export {
   videoSelected,
   yTLinkPlayed,
+  setYoutubeLink,
   setPlayer,
   setPause,
   setDuration,
@@ -20,5 +21,8 @@ export {
   updateScriptTranslation,
   updatePreview,
   setIndexActive,
-  setPreviousState
+  setPreviousState,
+  setProjectKey,
+  setProjectName,
+  loadProject
 } from "./subtitle.js";

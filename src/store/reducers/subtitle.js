@@ -1,4 +1,6 @@
 const initialState = {
+  projectKey: "",
+  projectName: "Subtitle",
   subtitleList: [],
   timeStamp: [],
   script: [],
@@ -12,6 +14,16 @@ const initialState = {
 const subtitleReducer = (state = initialState, action) => {
   console.log(action);
   switch (action.type) {
+    case "SET_PROJECT_KEY":
+      return {
+        ...state,
+        projectKey: action.projectKey
+      };
+    case "SET_PROJECT_NAME":
+      return {
+        ...state,
+        projectName: action.projectName
+      };
     case "SET_SUBTITLELIST":
       return {
         ...state,
@@ -66,6 +78,18 @@ const subtitleReducer = (state = initialState, action) => {
       return {
         ...state,
         previousState: action.previousState
+      };
+    case "LOAD_PROJECT":
+      return {
+        ...state,
+        indexActive: 0,
+        previousIndexActive: state.indexActive,
+        projectKey: action.projectKey,
+        projectName: action.projectName,
+        timeStamp: action.timeStamp,
+        script: action.script,
+        scriptTranslation: action.scriptTranslation,
+        preview: []
       };
     default:
       return state;

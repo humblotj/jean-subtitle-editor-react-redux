@@ -31,7 +31,6 @@ import * as actions from "../../../store/actions/index";
 import * as SubtitleParser from "../../../Utils/SubtitleParser";
 import * as Translate from "../../../Utils/Translate";
 import { EventEmitter } from "../../../Utils/events";
-import CommonTab from "./CommonTab";
 
 const languagesSupported = [
   { value: "ko", viewValue: "Korean" },
@@ -452,7 +451,11 @@ class SubtitleTab extends React.Component {
           )}
         </Popper>
         <Divider orientation="vertical" />
-        <Button ref={this.menuTranslation} onClick={this.toggleTranslation}>
+        <Button
+          ref={this.menuTranslation}
+          onClick={this.toggleTranslation}
+          disabled={!this.props.timeStamp.length}
+        >
           <Box display="flex" flexDirection="column" alignItems="center">
             <SubtitlesIcon />
             <span
@@ -522,7 +525,10 @@ class SubtitleTab extends React.Component {
           )}
         </Popper>
         <Divider orientation="vertical" />
-        <Button onClick={this.translate}>
+        <Button
+          onClick={this.translate}
+          disabled={!this.props.timeStamp.length}
+        >
           <Box display="flex" flexDirection="column" alignItems="center">
             <TranslateIcon />
             <span
@@ -557,7 +563,11 @@ class SubtitleTab extends React.Component {
           </Select>
         </FormControl>
         <Divider orientation="vertical" />
-        <Button ref={this.exportSubtitle} onClick={this.toggleExportSubtitle}>
+        <Button
+          ref={this.exportSubtitle}
+          onClick={this.toggleExportSubtitle}
+          disabled={!this.props.timeStamp.length}
+        >
           <Box display="flex" flexDirection="column" alignItems="center">
             <SubtitlesOutlinedIcon />
             <span
@@ -608,6 +618,7 @@ class SubtitleTab extends React.Component {
         <Button
           ref={this.exportTranslation}
           onClick={this.toggleExportTranslation}
+          disabled={!this.props.timeStamp.length}
         >
           <Box display="flex" flexDirection="column" alignItems="center">
             <SubtitlesOutlinedIcon />
