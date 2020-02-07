@@ -94,6 +94,7 @@ class HomeTab extends React.Component {
 
   loadProject = () => {
     EventEmitter.dispatch("loadProject", this.state.projectKeyTmp);
+    EventEmitter.dispatch("changeURL", this.state.projectKeyTmp);
   };
 
   render() {
