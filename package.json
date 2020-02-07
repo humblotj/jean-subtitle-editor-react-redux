@@ -33,7 +33,7 @@
     "xml2js": "^0.4.23"
   },
   "scripts": {
-    "start": "react-app-rewired start --no-cache",
+    "start": "react-app-rewired start",
     "build": "react-scripts build",
     "test": "react-scripts test",
     "eject": "react-scripts eject"
@@ -54,8 +54,11 @@
     ]
   },
   "devDependencies": {
+    "@hot-loader/react-dom": "^16.11.0",
     "babel-plugin-transform-imports": "^2.0.0",
     "customize-cra": "^0.9.1",
-    "react-app-rewired": "^2.1.5"
+    "react-app-rewire-hot-loader": "^2.0.1",
+    "react-app-rewired": "^2.1.5",
+    "react-hot-loader": "^4.12.19"
   }
 }

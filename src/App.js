@@ -1,5 +1,6 @@
 import React from "react";
-import { Route, Switch, withRouter, Redirect } from "react-router-dom";
+import { Route, Switch, Redirect } from "react-router-dom";
+import { hot } from "react-hot-loader";
 
 import "./App.css";
 import SubtitleEditor from "./containers/SubtitleEditor/SubtitleEditor";
@@ -13,4 +14,4 @@ function App() {
   );
 }
 
-export default withRouter(App);
+export default process.env.NODE_ENV === "development" ? hot(module)(App) :(App);
