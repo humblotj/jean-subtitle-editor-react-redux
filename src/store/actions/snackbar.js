@@ -1,11 +1,13 @@
+import * as actionTypes from "./actionTypes";
+
 export const openSnackbar = message => {
   return dispatch => {
-    dispatch({ type: "OPEN_SNACKBAR", message });
+    dispatch({ type: actionTypes.OPEN_SNACKBAR, message });
   };
 };
 
 export const closeSnackbar = () => {
   return dispatch => {
-    dispatch({ type: "CLOSE_SNACKBAR" });
+    dispatch({ type: actionTypes.CLOSE_SNACKBAR });
   };
 };

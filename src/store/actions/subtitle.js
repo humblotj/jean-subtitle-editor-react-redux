@@ -1,12 +1,14 @@
+import * as actionTypes from "./actionTypes";
+
 export const setProjectKey = projectKey => {
   return dispatch => {
-    dispatch({ type: "SET_PROJECT_KEY", projectKey });
+    dispatch({ type: actionTypes.SET_PROJECT_KEY, projectKey });
   };
 };
 
 export const setProjectName = projectName => {
   return dispatch => {
-    dispatch({ type: "SET_PROJECT_NAME", projectName });
+    dispatch({ type: actionTypes.SET_PROJECT_NAME, projectName });
   };
 };
 
@@ -19,7 +21,7 @@ export const subtitleSelected = (
 ) => {
   return dispatch => {
     dispatch({
-      type: "SUBTITLE_SELECTED",
+      type: actionTypes.SUBTITLE_SELECTED,
       timeStamp,
       script,
       scriptTranslation,
@@ -37,7 +39,7 @@ export const translationSelected = (
 ) => {
   return dispatch => {
     dispatch({
-      type: "TRANSLATION_SELECTED",
+      type: actionTypes.TRANSLATION_SELECTED,
       timeStamp,
       script,
       scriptTranslation,
@@ -48,43 +50,46 @@ export const translationSelected = (
 
 export const setSubtitleList = subtitleList => {
   return dispatch => {
-    dispatch({ type: "SET_SUBTITLELIST", subtitleList });
+    dispatch({ type: actionTypes.SET_SUBTITLELIST, subtitleList });
   };
 };
 
 export const updateTimestamp = timeStamp => {
   return dispatch => {
-    dispatch({ type: "UPDATE_TIMESTAMP", timeStamp });
+    dispatch({ type: actionTypes.UPDATE_TIMESTAMP, timeStamp });
   };
 };
 
 export const updateScript = script => {
   return dispatch => {
-    dispatch({ type: "UPDATE_SCRIPT", script });
+    dispatch({ type: actionTypes.UPDATE_SCRIPT, script });
   };
 };
 
 export const updateScriptTranslation = scriptTranslation => {
   return dispatch => {
-    dispatch({ type: "UPDATE_SCRIPT_TRANSLATION", scriptTranslation });
+    dispatch({
+      type: actionTypes.UPDATE_SCRIPT_TRANSLATION,
+      scriptTranslation
+    });
   };
 };
 
 export const updatePreview = preview => {
   return dispatch => {
-    dispatch({ type: "UPDATE_PREVIEW", preview });
+    dispatch({ type: actionTypes.UPDATE_PREVIEW, preview });
   };
 };
 
 export const setIndexActive = indexActive => {
   return dispatch => {
-    dispatch({ type: "SET_INDEX_ACTIVE", indexActive });
+    dispatch({ type: actionTypes.SET_INDEX_ACTIVE, indexActive });
   };
 };
 
 export const setPreviousState = previousState => {
   return dispatch => {
-    dispatch({ type: "SET_PREVIOUS_STATE", previousState });
+    dispatch({ type: actionTypes.SET_PREVIOUS_STATE, previousState });
   };
 };
 
@@ -97,7 +102,7 @@ export const loadProject = (
 ) => {
   return dispatch => {
     dispatch({
-      type: "LOAD_PROJECT",
+      type: actionTypes.LOAD_PROJECT,
       projectKey,
       projectName,
       timeStamp,

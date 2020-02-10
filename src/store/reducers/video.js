@@ -1,4 +1,6 @@
-const initialState = {
+import * as actionTypes from '../actions/actionTypes';
+
+export const initialState = {
   player: null,
   wavesurfer: null,
   rate: 1,
@@ -18,15 +20,15 @@ const initialState = {
 
 const videoReducer = (state = initialState, action) => {
   switch (action.type) {
-    case "VIDEO_SELECTED":
+    case actionTypes.VIDEO_SELECTED:
       return {
         ...state,
-        videoId: action.videoId,
+        videoId: "",
         videoType: action.videoType,
         url: action.url,
         rate: 1
       };
-    case "YT_PLAYED":
+    case actionTypes.YT_PLAYED:
       return {
         ...state,
         videoId: action.videoId,
@@ -34,49 +36,49 @@ const videoReducer = (state = initialState, action) => {
         url: action.url,
         rate: 1
       };
-    case "SET_YOUTUBE_LINK":
+    case actionTypes.SET_YOUTUBE_LINK:
       return {
         ...state,
         youtubeLink: action.youtubeLink
       };
-    case "SET_PLAYER":
+    case actionTypes.SET_PLAYER:
       return {
         ...state,
         player: action.player
       };
-    case "SET_PAUSE":
+    case actionTypes.SET_PAUSE:
       return {
         ...state,
         paused: action.pause
       };
-    case "SET_DURATION":
+    case actionTypes.SET_DURATION:
       return {
         ...state,
         duration: action.duration,
         durationSeconds: action.durationSeconds
       };
-    case "SET_PROGRESS":
+    case actionTypes.SET_PROGRESS:
       return {
         ...state,
         currentTime: action.currentTime,
         progress: action.progress
       };
-    case "SET_WAVESURFER":
+    case actionTypes.SET_WAVESURFER:
       return {
         ...state,
         wavesurfer: action.wavesurfer
       };
-    case "SET_VOLUME":
+    case actionTypes.SET_VOLUME:
       return {
         ...state,
         audioVolume: action.audioVolume
       };
-    case "SET_TIMEOUT":
+    case actionTypes.SET_TIMEOUT:
       return {
         ...state,
         timeout: action.timeout
       };
-    case "SET_ON_TIME_UPDATE":
+    case actionTypes.SET_ON_TIME_UPDATE:
       return {
         ...state,
         onTimeUpdate: action.onTimeUpdate

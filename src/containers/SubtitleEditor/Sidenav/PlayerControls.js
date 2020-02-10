@@ -11,7 +11,7 @@ import {
 
 import * as actions from "../../../store/actions/index";
 
-class PlayerControls extends React.Component {
+export class PlayerControls extends React.Component {
   shouldComponentUpdate(nextProps, nextState) {
     if (
       this.props.player === nextProps.player &&
