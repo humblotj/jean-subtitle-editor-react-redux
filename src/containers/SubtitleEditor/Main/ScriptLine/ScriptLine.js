@@ -68,9 +68,8 @@ class ScriptLine extends React.Component {
   };
 
   scriptTranslationChanged = event => {
-    const { scriptTranslation, index } = this.props;
-    scriptTranslation[index] = event.currentTarget.value;
-    this.props.updateScriptTranslation([...scriptTranslation]);
+    const { index } = this.props;
+    this.props.updateScriptTranslation(index, event.currentTarget.value);
   };
 
   startTimeChanged = event => {
