@@ -57,12 +57,16 @@ const subtitleReducer = (state = initialState, action) => {
     case actionTypes.UPDATE_SCRIPT:
       return {
         ...state,
-        script: action.script
+        script: state.script.map((text, i) =>
+          i === action.index ? action.value : text
+        )
       };
     case actionTypes.UPDATE_SCRIPT_TRANSLATION:
       return {
         ...state,
-        scriptTranslation: action.scriptTranslation
+        scriptTranslation: state.scriptTranslation.map((text, i) =>
+          i === action.index ? action.value : text
+        )
       };
     case actionTypes.UPDATE_PREVIEW:
       return {

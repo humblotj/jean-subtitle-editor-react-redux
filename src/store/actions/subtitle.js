@@ -60,17 +60,18 @@ export const updateTimestamp = timeStamp => {
   };
 };
 
-export const updateScript = script => {
+export const updateScript = (index, value) => {
   return dispatch => {
-    dispatch({ type: actionTypes.UPDATE_SCRIPT, script });
+    dispatch({ type: actionTypes.UPDATE_SCRIPT, index, value });
   };
 };
 
-export const updateScriptTranslation = scriptTranslation => {
+export const updateScriptTranslation = (index, value) => {
   return dispatch => {
     dispatch({
       type: actionTypes.UPDATE_SCRIPT_TRANSLATION,
-      scriptTranslation
+      index,
+      value
     });
   };
 };

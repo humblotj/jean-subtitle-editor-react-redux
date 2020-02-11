@@ -63,9 +63,8 @@ class ScriptLine extends React.Component {
   }
 
   scriptChanged = event => {
-    const { script, index } = this.props;
-    script[index] = event.currentTarget.value;
-    this.props.updateScript([...script]);
+    const { index } = this.props;
+    this.props.updateScript(index, event.currentTarget.value);
   };
 
   scriptTranslationChanged = event => {
@@ -309,9 +308,10 @@ const mapStateToProps = state => {
 const mapDispatchToProps = dispatch => {
   return {
     updateTimestamp: timeStamp => dispatch(actions.updateTimestamp(timeStamp)),
-    updateScript: script => dispatch(actions.updateScript(script)),
-    updateScriptTranslation: scriptTranslation =>
-      dispatch(actions.updateScriptTranslation(scriptTranslation)),
+    updateScript: (index, value) =>
+      dispatch(actions.updateScript(index, value)),
+    updateScriptTranslation: (index, value) =>
+      dispatch(actions.updateScriptTranslation(index, value)),
     setTimeout: timeout => dispatch(actions.setTimeout(timeout)),
     setOnTimeUpdate: onTimeUpdate =>
       dispatch(actions.setOnTimeUpdate(onTimeUpdate)),

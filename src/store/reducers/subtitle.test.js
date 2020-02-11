@@ -112,28 +112,30 @@ describe("subtitle reducer", () => {
   it("should handle UPDATE_SCRIPT", () => {
     expect(
       subtitleReducer(
-        { script: [] },
+        { script: ["text"] },
         {
           type: actionTypes.UPDATE_SCRIPT,
-          script: ["text"]
+          index: 0,
+          value: "new"
         }
       )
     ).toEqual({
-      script: ["text"]
+      script: ["new"]
     });
   });
 
   it("should handle UPDATE_SCRIPT_TRANSLATION", () => {
     expect(
       subtitleReducer(
-        { scriptTranslation: [] },
+        { scriptTranslation: ["text"] },
         {
           type: actionTypes.UPDATE_SCRIPT_TRANSLATION,
-          scriptTranslation: ["text"]
+          index: 0,
+          value: "new"
         }
       )
     ).toEqual({
-      scriptTranslation: ["text"]
+      scriptTranslation: ["new"]
     });
   });
 
