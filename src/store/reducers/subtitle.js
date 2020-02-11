@@ -1,4 +1,4 @@
-import * as actionTypes from '../actions/actionTypes';
+import * as actionTypes from "../actions/actionTypes";
 
 export const initialState = {
   projectKey: "",
@@ -14,7 +14,6 @@ export const initialState = {
 };
 
 const subtitleReducer = (state = initialState, action) => {
-  console.log(action);
   switch (action.type) {
     case actionTypes.SET_PROJECT_KEY:
       return {
@@ -69,6 +68,41 @@ const subtitleReducer = (state = initialState, action) => {
       return {
         ...state,
         preview: action.preview
+      };
+    case actionTypes.REMOVE_LINES:
+      return {
+        ...state,
+        timeStamp: [
+          ...state.timeStamp.slice(0, action.begin),
+          ...state.timeStamp.slice(action.end + 1)
+        ],
+        script: [
+          ...state.script.slice(0, action.begin),
+          ...state.script.slice(action.end + 1)
+        ],
+        scriptTranslation: [
+          ...state.scriptTranslation.slice(0, action.begin),
+          ...state.scriptTranslation.slice(action.end + 1)
+        ],
+        preview: [
+          ...state.preview.slice(0, action.begin),
+          ...state.preview.slice(action.end + 1)
+        ],
+        indexActive: action.indexActive
+      };
+    case actionTypes.REMOVE_EMPTY_LINES:
+      return {
+        ...state,
+        timeStamp: action.timeStamp,
+        script: action.script,
+        scriptTranslation: action.scriptTranslation,
+        preview: action.preview,
+        indexActive: action.indexActive
+      };
+    case actionTypes.FIX_OVERLAPPING:
+      return {
+        ...state,
+        timeStamp: action.timeStamp
       };
     case actionTypes.SET_INDEX_ACTIVE:
       return {

@@ -81,6 +81,74 @@ export const updatePreview = preview => {
   };
 };
 
+export const removeLines = (begin, end) => {
+  return (dispatch, getState) => {
+    const { indexActive, timeStamp } = getState();
+    const newLength = timeStamp.length - (end - begin + 1);
+    const newIndexActive =
+      indexActive < newLength ? indexActive : newLength ? 0 : null;
+
+    dispatch({
+      type: actionTypes.REMOVE_LINES,
+      begin,
+      end,
+      indexActive: newIndexActive
+    });
+  };
+};
+
+export const removeEmptyLines = () => {
+  return (dispatch, getState) => {
+    const timeStamp = getState().timeStamp.slice();
+    const script = getState().script.slice();
+    const scriptTranslation = getState().scriptTranslation.slice();
+    const preview = getState().preview.slice();
+    const { indexActive } = getState();
+
+    let i = timeStamp.length;
+    let newLength = timeStamp.length;
+    while (i--) {
+      if (script[i] === "") {
+        timeStamp.splice(i, 1);
+        script.splice(i, 1);
+        scriptTranslation.splice(i, 1);
+        preview.splice(i, 1);
+        newLength--;
+      }
+    }
+
+    dispatch({
+      type: actionTypes.REMOVE_EMPTY_LINES,
+      timeStamp,
+      script,
+      scriptTranslation,
+      preview,
+      indexActive: !newLength
+        ? null
+        : indexActive < newLength
+        ? indexActive
+        : newLength
+    });
+  };
+};
+
+export const fixOverlapping = () => {
+  return (dispatch, getState) => {
+    const timeStamp = getState().timeStamp.map((time, index) => {
+      if (
+        index !== timeStamp.length - 1 &&
+        time.endMs > timeStamp[index + 1].startMs
+      ) {
+        return { startMs: time.startMs, endMs: timeStamp[index + 1].startMs };
+      } else {
+        return time;
+      }
+    });
+
+    dispatch({ type: actionTypes.SET_INDEX_ACTIVE, timeStamp });
+  };
+};
+
 export const setIndexActive = indexActive => {
   return dispatch => {
     dispatch({ type: actionTypes.SET_INDEX_ACTIVE, indexActive });

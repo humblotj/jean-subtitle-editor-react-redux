@@ -151,6 +151,40 @@ describe("subtitle reducer", () => {
     });
   });
 
+  it("should handle REMOVE_LINES", () => {
+    expect(
+      subtitleReducer(
+        {
+          timeStamp: [
+            { startMs: 0, endMs: 1 },
+            { startMs: 1, endMs: 2 },
+            { startMs: 2, endMs: 3 },
+            { startMs: 3, endMs: 4 }
+          ],
+          script: ["text", "text1", "text2", "text3"],
+          scriptTranslation: ["text", "text1", "text2", "text3"],
+          preview: ["text", "text1", "text2", "text3"],
+          indexActive: 5
+        },
+        {
+          type: actionTypes.REMOVE_LINES,
+          begin: 1,
+          end: 2,
+          indexActive: 0
+        }
+      )
+    ).toEqual({
+      timeStamp: [
+        { startMs: 0, endMs: 1 },
+        { startMs: 3, endMs: 4 }
+      ],
+      script: ["text", "text3"],
+      scriptTranslation: ["text", "text3"],
+      preview: ["text", "text3"],
+      indexActive: 0
+    });
+  });
+
   it("should handle SET_INDEX_ACTIVE", () => {
     expect(
       subtitleReducer(
@@ -199,7 +233,7 @@ describe("subtitle reducer", () => {
           projectName: "Name",
           timeStamp: [{ startMs: 0, endMs: 1 }],
           script: ["text"],
-          scriptTranslation: ["text"],
+          scriptTranslation: ["text"]
         }
       )
     ).toEqual({

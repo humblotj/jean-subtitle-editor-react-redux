@@ -20,6 +20,8 @@ export {
   updateScript,
   updateScriptTranslation,
   updatePreview,
+  removeLines,
+  fixOverlapping,
   setIndexActive,
   setPreviousState,
   setProjectKey,

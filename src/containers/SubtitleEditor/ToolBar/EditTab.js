@@ -33,7 +33,7 @@ class EditTab extends React.Component {
 
   removeMultipleLines = result => {
     this.setState({ openRemoveLines: false });
-    const { timeStamp, script, scriptTranslation, preview } = this.props;
+    const { timeStamp } = this.props;
     if (result) {
       EventEmitter.dispatch("do", null);
       const begin = result.begin - 1 >= 0 ? result.begin - 1 : 0;
@@ -42,53 +42,21 @@ class EditTab extends React.Component {
           ? result.end - 1
           : timeStamp.length - 1;
 
-      timeStamp.splice(begin, end - begin + 1);
-      script.splice(begin, end - begin + 1);
-      scriptTranslation.splice(begin, end - begin + 1);
-      preview.splice(begin, end - begin + 1);
-
-      this.props.translationSelected(
-        [...timeStamp],
-        [...script],
-        [...scriptTranslation],
-        [...preview]
-      );
-
-      this.props.setIndexActive(timeStamp.length ? 0 : null);
-
+      this.props.removeLines(begin, end);
       EventEmitter.dispatch("refreshRegion", null);
     }
   };
 
   removeEmptyLines = () => {
     EventEmitter.dispatch("do", null);
-    const { timeStamp, script, scriptTranslation, preview } = this.props;
-    let i = timeStamp.length;
-    while (i--) {
-      if (script[i] === "") {
-        timeStamp.splice(i, 1);
-        script.splice(i, 1);
-        scriptTranslation.splice(i, 1);
-        preview.splice(i, 1);
-      }
-    }
-    this.props.translationSelected(
-      [...timeStamp],
-      [...script],
-      [...scriptTranslation],
-      [...preview]
-    );
+    this.props.removeEmptyLines();
+    EventEmitter.dispatch("refreshRegion", null);
   };
 
   fixOverlapping = () => {
     EventEmitter.dispatch("do", null);
-    const { timeStamp } = this.props;
-    for (let i = 0; i < timeStamp.length - 1; i++) {
-      if (timeStamp[i].endMs > timeStamp[i + 1].startMs) {
-        timeStamp[i].endMs = timeStamp[i + 1].startMs;
-      }
-    }
-    this.props.updateTimestamp([...timeStamp]);
+    this.props.fixOverlapping();
+    EventEmitter.dispatch("refreshRegion", null);
   };
 
   mergeToSentences() {
@@ -329,6 +297,9 @@ const mapStateToProps = state => {
 const mapDispatchToProps = dispatch => {
   return {
     updateTimestamp: timeStamp => dispatch(actions.updateTimestamp(timeStamp)),
+    removeLines: (begin, end) => dispatch(actions.removeLines(begin, end)),
+    removeEmptyLines: () => dispatch(actions.removeEmptyLines()),
+    fixOverlapping: () => dispatch(actions.fixOverlapping()),
     translationSelected: (timeStamp, script, scriptTranslation, preview) =>
       dispatch(
         actions.translationSelected(
