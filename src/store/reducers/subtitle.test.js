@@ -51,7 +51,7 @@ describe("subtitle reducer", () => {
   it("should handle SUBTITLE_SELECTED", () => {
     expect(
       subtitleReducer(initialState, {
-        type: actionTypes.SUBTITLE_SELECTED,
+        type: actionTypes.UPDATE_ALL,
         timeStamp: [{ start: 0, end: 1 }],
         script: ["text"],
         scriptTranslation: ["text"],
@@ -67,7 +67,6 @@ describe("subtitle reducer", () => {
       scriptTranslation: ["text"],
       preview: ["text"],
       indexActive: 0,
-      previousIndexActive: null,
       previousState: null
     });
   });
@@ -75,11 +74,12 @@ describe("subtitle reducer", () => {
   it("should handle TRANSLATION_SELECTED", () => {
     expect(
       subtitleReducer(initialState, {
-        type: actionTypes.TRANSLATION_SELECTED,
+        type: actionTypes.UPDATE_ALL,
         timeStamp: [{ startMs: 0, endMs: 1 }],
         script: ["text"],
         scriptTranslation: ["text"],
-        preview: ["text"]
+        preview: ["text"],
+        indexActive: null,
       })
     ).toEqual({
       projectKey: "",
@@ -90,7 +90,6 @@ describe("subtitle reducer", () => {
       scriptTranslation: ["text"],
       preview: ["text"],
       indexActive: null,
-      previousIndexActive: null,
       previousState: null
     });
   });
@@ -192,7 +191,7 @@ describe("subtitle reducer", () => {
   it("should handle SET_INDEX_ACTIVE", () => {
     expect(
       subtitleReducer(
-        { indexActive: 0, previousIndexActive: null },
+        { indexActive: 0 },
         {
           type: actionTypes.SET_INDEX_ACTIVE,
           indexActive: 1
@@ -200,7 +199,6 @@ describe("subtitle reducer", () => {
       )
     ).toEqual({
       indexActive: 1,
-      previousIndexActive: 0
     });
   });
 
@@ -223,7 +221,6 @@ describe("subtitle reducer", () => {
       subtitleReducer(
         {
           indexActive: 1,
-          previousIndexActive: 0,
           projectKey: "",
           projectName: "Subtitle",
           timeStamp: null,
@@ -242,7 +239,6 @@ describe("subtitle reducer", () => {
       )
     ).toEqual({
       indexActive: 0,
-      previousIndexActive: 1,
       projectKey: "123",
       projectName: "Name",
       timeStamp: [{ startMs: 0, endMs: 1 }],

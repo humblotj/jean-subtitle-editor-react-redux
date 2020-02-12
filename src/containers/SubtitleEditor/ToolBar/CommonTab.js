@@ -126,13 +126,7 @@ class CommonTab extends React.Component {
 
   redo = () => {
     if (this.dataRedoArray.length !== 0) {
-      const {
-        timeStamp,
-        script,
-        scriptTranslation,
-        preview,
-        indexActive
-      } = this.props;
+      const { timeStamp, script, scriptTranslation, preview } = this.props;
 
       this.dataUndoArray.push({
         timeStamp: JSON.parse(JSON.stringify(timeStamp)),
@@ -151,11 +145,6 @@ class CommonTab extends React.Component {
 
       if (this.dataRedoArray.length === 0) {
         this.setState({ showRedo: false });
-      }
-      if (indexActive > timeStamp.length - 1) {
-        this.props.setIndexActive(
-          timeStamp.length ? this.timeStamp.length - 1 : null
-        );
       }
     }
 

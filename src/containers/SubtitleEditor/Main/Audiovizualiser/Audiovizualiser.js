@@ -166,9 +166,7 @@ class Audiovizualiser extends React.Component {
 
   timeoutLoadRegions = () => {
     if (this.wavesurfer.isReady) {
-      if (this.props.timeStamp.length) {
-        this.loadRegions();
-      }
+      setTimeout(this.loadRegions, 0);
     } else {
       setTimeout(this.timeoutLoadRegions, 1000);
     }

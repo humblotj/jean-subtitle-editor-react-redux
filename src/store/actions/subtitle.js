@@ -21,7 +21,7 @@ export const subtitleSelected = (
 ) => {
   return dispatch => {
     dispatch({
-      type: actionTypes.SUBTITLE_SELECTED,
+      type: actionTypes.UPDATE_ALL,
       timeStamp,
       script,
       scriptTranslation,
@@ -37,13 +37,19 @@ export const translationSelected = (
   scriptTranslation,
   preview
 ) => {
-  return dispatch => {
+  return (dispatch, getState) => {
+    const { indexActive } = getState().subtitle;
     dispatch({
-      type: actionTypes.TRANSLATION_SELECTED,
+      type: actionTypes.UPDATE_ALL,
       timeStamp,
       script,
       scriptTranslation,
-      preview
+      preview,
+      indexActive: !timeStamp.length
+        ? null
+        : indexActive < timeStamp.length
+        ? indexActive
+        : timeStamp.length - 1
     });
   };
 };
@@ -194,7 +200,7 @@ export const mergeToSentences = maxChar => {
           ).trim();
           scriptTranslation.splice(i, 1);
           preview[i - 1] = {
-            en: (preview[i - 1].en.trim() + " " + preview[i].en.trim()).trim(),
+            en: (preview[i - 1].en.trim() + " " + preview[i].en.trim()).trim()
             // ko: (preview[i - 1].ko.trim() + " " + preview[i].ko.trim()).trim(),
             // rpa: (
             //   preview[i - 1].rpa.trim() +

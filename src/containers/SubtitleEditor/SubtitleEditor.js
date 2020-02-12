@@ -93,7 +93,7 @@ class SubtitleEditor extends React.Component {
       .then(response => {
         const downloadURL = response.data;
         if (this.props.url !== downloadURL) {
-          this.props.videoSelected(videoId, "video/mp4", downloadURL);
+          this.props.yTLinkPlayed(videoId, downloadURL);
           this.displaySubtitles(videoId);
         }
       })
@@ -175,8 +175,8 @@ const mapDispatchToProps = dispatch => {
       ),
     setYoutubeLink: youtubeLink =>
       dispatch(actions.setYoutubeLink(youtubeLink)),
-    videoSelected: (videoId, videoType, url) =>
-      dispatch(actions.videoSelected(videoId, videoType, url)),
+    yTLinkPlayed: (videoId, url) =>
+      dispatch(actions.yTLinkPlayed(videoId, url)),
     setSubtitleList: subtitleList =>
       dispatch(actions.setSubtitleList(subtitleList))
   };

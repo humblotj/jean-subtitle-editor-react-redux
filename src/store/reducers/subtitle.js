@@ -9,7 +9,6 @@ export const initialState = {
   scriptTranslation: [],
   preview: [], //not implemented in react project version
   indexActive: null,
-  previousIndexActive: null,
   previousState: null
 };
 
@@ -29,25 +28,6 @@ const subtitleReducer = (state = initialState, action) => {
       return {
         ...state,
         subtitleList: action.subtitleList
-      };
-    case actionTypes.SUBTITLE_SELECTED:
-      return {
-        ...state,
-        projectName: "Subtitle",
-        timeStamp: action.timeStamp,
-        script: action.script,
-        scriptTranslation: action.scriptTranslation,
-        preview: action.preview,
-        indexActive: action.indexActive,
-        previousIndexActive: null
-      };
-    case actionTypes.TRANSLATION_SELECTED:
-      return {
-        ...state,
-        timeStamp: action.timeStamp,
-        script: action.script,
-        scriptTranslation: action.scriptTranslation,
-        preview: action.preview
       };
     case actionTypes.UPDATE_TIMESTAMP:
       return {
@@ -114,7 +94,7 @@ const subtitleReducer = (state = initialState, action) => {
         script: action.script,
         scriptTranslation: action.scriptTranslation,
         preview: action.preview,
-        indexActive: action.indexActive
+        indexActive: action.indexActive,
       };
     case actionTypes.SET_TIMESTAMP:
       return {
@@ -124,7 +104,6 @@ const subtitleReducer = (state = initialState, action) => {
     case actionTypes.SET_INDEX_ACTIVE:
       return {
         ...state,
-        previousIndexActive: state.indexActive,
         indexActive: action.indexActive
       };
     case actionTypes.SET_PREVIOUS_STATE:
@@ -136,7 +115,6 @@ const subtitleReducer = (state = initialState, action) => {
       return {
         ...state,
         indexActive: 0,
-        previousIndexActive: state.indexActive,
         projectKey: action.projectKey,
         projectName: action.projectName,
         timeStamp: action.timeStamp,
