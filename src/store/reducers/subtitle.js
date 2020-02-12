@@ -55,8 +55,14 @@ const subtitleReducer = (state = initialState, action) => {
         timeStamp: state.timeStamp.map((time, i) =>
           i === action.index
             ? {
-                startMs: action.startMs !== undefined ? action.startMs : time.startMs,
-                endMs: action.endMs !== undefined ? action.endMs : time.startMs
+                startMs:
+                  action.startMs !== undefined && action.startMs !== null
+                    ? action.startMs
+                    : time.startMs,
+                endMs:
+                  action.endMs !== undefined && action.endMs !== null
+                    ? action.endMs
+                    : time.startMs
               }
             : { ...time }
         )

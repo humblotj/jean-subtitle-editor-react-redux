@@ -61,9 +61,9 @@ class EditTab extends React.Component {
 
   mergeToSentences = () => {
     EventEmitter.dispatch("do", null);
-    this.props.mergeToSentences();
+    this.props.mergeToSentences(this.state.maxChar);
     EventEmitter.dispatch("refreshRegion", null);
-  }
+  };
 
   shiftTimes = result => {
     this.setState({ openShiftTimes: false });
@@ -231,7 +231,8 @@ const mapDispatchToProps = dispatch => {
     removeLines: (begin, end) => dispatch(actions.removeLines(begin, end)),
     removeEmptyLines: () => dispatch(actions.removeEmptyLines()),
     fixOverlapping: () => dispatch(actions.fixOverlapping()),
-    mergeToSentences: () => dispatch(actions.mergeToSentences()),
+    mergeToSentences: maxChar =>
+      dispatch(actions.mergeToSentences(maxChar)),
     setIndexActive: indexActive => dispatch(actions.setIndexActive(indexActive))
   };
 };

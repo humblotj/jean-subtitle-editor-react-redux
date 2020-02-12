@@ -100,7 +100,6 @@ export const removeLines = (begin, end) => {
 
 export const removeEmptyLines = () => {
   return (dispatch, getState) => {
-    console.log(getState().subtitle);
     const timeStamp = getState().subtitle.timeStamp.map(item => ({ ...item }));
     const script = getState().subtitle.script.slice();
     const scriptTranslation = getState().subtitle.scriptTranslation.slice();
@@ -134,10 +133,10 @@ export const removeEmptyLines = () => {
   };
 };
 
-//TO_FIX
 export const fixOverlapping = () => {
   return (dispatch, getState) => {
-    const timeStamp = getState().subtitle.timeStamp.map((time, index) => {
+    const { timeStamp } = getState().subtitle;
+    const newTimeStamp = timeStamp.map((time, index) => {
       if (
         index !== timeStamp.length - 1 &&
         time.endMs > timeStamp[index + 1].startMs
@@ -148,11 +147,11 @@ export const fixOverlapping = () => {
       }
     });
 
-    dispatch({ type: actionTypes.SET_TIMESTAMP, timeStamp });
+    dispatch({ type: actionTypes.SET_TIMESTAMP, timeStamp: newTimeStamp });
   };
 };
 
-export const mergeToSentences = () => {
+export const mergeToSentences = maxChar => {
   return (dispatch, getState) => {
     const timeStamp = getState().subtitle.timeStamp.map(item => ({ ...item }));
     const script = getState().subtitle.script.slice();
@@ -175,8 +174,12 @@ export const mergeToSentences = () => {
           regexEnd
         ) /*&& script[i].sentence.match(regexBegin)*/
       ) {
-        const newScript = script[i - 1].trim() + " " + script[i].trim();
-        if (newScript.length < this.state.maxCharSentence) {
+        const newScript = (
+          script[i - 1].trim() +
+          " " +
+          script[i].trim()
+        ).trim();
+        if (newScript.length < maxChar) {
           timeStamp[i - 1] = {
             startMs: timeStamp[i - 1].startMs,
             endMs: timeStamp[i].endMs
@@ -184,19 +187,27 @@ export const mergeToSentences = () => {
           timeStamp.splice(i, 1);
           script[i - 1] = newScript;
           script.splice(i, 1);
-          scriptTranslation[i - 1] =
-            scriptTranslation[i - 1].trim() + " " + scriptTranslation[i].trim();
+          scriptTranslation[i - 1] = (
+            scriptTranslation[i - 1].trim() +
+            " " +
+            scriptTranslation[i].trim()
+          ).trim();
           scriptTranslation.splice(i, 1);
           preview[i - 1] = {
-            en: preview[i - 1].en.trim() + " " + preview[i].en.trim(),
-            ko: preview[i - 1].ko.trim() + " " + preview[i].ko.trim(),
-            rpa: preview[i - 1].rpa.trim() + " " + preview[i].rpa.trim()
+            en: (preview[i - 1].en.trim() + " " + preview[i].en.trim()).trim(),
+            // ko: (preview[i - 1].ko.trim() + " " + preview[i].ko.trim()).trim(),
+            // rpa: (
+            //   preview[i - 1].rpa.trim() +
+            //   " " +
+            //   preview[i].rpa.trim()
+            // ).trim()
           };
           preview.splice(i, 1);
           newLength--;
         }
       }
     }
+
     dispatch({
       type: actionTypes.UPDATE_ALL,
       timeStamp,

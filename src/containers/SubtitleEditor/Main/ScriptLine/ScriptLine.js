@@ -17,50 +17,65 @@ class ScriptLine extends React.Component {
     super();
     this.startInput = createRef();
     this.endInput = createRef();
-    this.state = {
-      startTime: "",
-      endTime: ""
-    };
+    // this.state = {
+    //   startTime: "",
+    //   endTime: ""
+    // };
   }
 
-  componentDidMount() {
-    const startTime = SubtitleParser.msToTime(
-      this.props.timeStamp[this.props.index].startMs
-    );
-    const endTime = SubtitleParser.msToTime(
-      this.props.timeStamp[this.props.index].endMs
-    );
-    this.setState({ startTime, endTime });
-  }
+  // componentDidMount() {
+  //   const startTime = SubtitleParser.msToTime(
+  //     this.props.timeStamp[this.props.index].startMs
+  //   );
+  //   const endTime = SubtitleParser.msToTime(
+  //     this.props.timeStamp[this.props.index].endMs
+  //   );
+  //   this.setState({ startTime, endTime });
+  // }
 
   shouldComponentUpdate(nextProps, nextState) {
     if (
       this.props.index === nextProps.index &&
-      this.props.index !== this.props.indexActive &&
-      nextProps.index !== nextProps.indexActive &&
-      this.props.script === nextProps.script &&
-      this.props.scriptTranslation === nextProps.scriptTranslation &&
+      ((this.props.index !== this.props.indexActive &&
+        nextProps.index !== nextProps.indexActive) ||
+        this.props.indexActive === nextProps.indexActive) &&
+      this.props.script[this.props.index] ===
+        nextProps.script[nextProps.index] &&
+      this.props.scriptTranslation[this.props.index] ===
+        nextProps.scriptTranslation[this.props.index] &&
       this.props.paused === nextProps.paused &&
-      this.props.timeStamp === nextProps.timeStamp &&
-      this.state.startTime === nextState.startTime &&
-      this.state.endTime === nextState.endTime
+      this.props.timeStamp[this.props.index].startMs ===
+        nextProps.timeStamp[nextProps.index].startMs &&
+      this.props.timeStamp[this.props.index].endMs ===
+        nextProps.timeStamp[nextProps.index].endMs
+      // this.state.startTime === nextState.startTime &&
+      // this.state.endTime === nextState.endTime
     ) {
       return false;
     }
     return true;
   }
 
-  componentDidUpdate(prevProps) {
-    if (prevProps.timeStamp !== this.props.timeStamp) {
-      const startTime = SubtitleParser.msToTime(
-        this.props.timeStamp[this.props.index].startMs
-      );
-      const endTime = SubtitleParser.msToTime(
-        this.props.timeStamp[this.props.index].endMs
-      );
-      this.setState({ startTime, endTime });
-    }
-  }
+  // componentDidUpdate(prevProps) {
+  //   if (
+  //     prevProps.timeStamp[prevProps.index].startMs !==
+  //     this.props.timeStamp[this.props.index].startMs
+  //   ) {
+  //     const startTime = SubtitleParser.msToTime(
+  //       this.props.timeStamp[this.props.index].startMs
+  //     );
+  //     this.setState({ startTime });
+  //   }
+  //   if (
+  //     prevProps.timeStamp[prevProps.index].endMs !==
+  //     this.props.timeStamp[this.props.index].endMs
+  //   ) {
+  //     const endTime = SubtitleParser.msToTime(
+  //       this.props.timeStamp[this.props.index].endMs
+  //     );
+  //     this.setState({ endTime });
+  //   }
+  // }
 
   scriptChanged = event => {
     const { index } = this.props;
@@ -202,9 +217,14 @@ class ScriptLine extends React.Component {
       scriptTranslation,
       paused
     } = this.props;
-    const { startTime, endTime } = this.state;
+    // const { startTime, endTime } = this.state;
+    const startTime = SubtitleParser.msToTime(
+      this.props.timeStamp[this.props.index].startMs
+    );
+    const endTime = SubtitleParser.msToTime(
+      this.props.timeStamp[this.props.index].endMs
+    );
 
-    console.log(index);
     return (
       <Box
         style={style}

@@ -52,15 +52,15 @@ class Audiovizualiser extends React.Component {
     const that = this;
 
     this.wavesurfer.on("loading", e => {
-      this.setState({ progress: e });
+      that.setState({ progress: e });
       if (e === 100) {
         that.props.setWavesurfer(that.wavesurfer);
-        setTimeout(this.timeoutLoadRegions, 1000);
+        setTimeout(that.timeoutLoadRegions, 1000);
       }
     });
 
     this.wavesurfer.on("interaction", e => {
-      this.seekTo.emit(e * 100);
+      // this.seekTo.emit(e * 100);
     });
 
     this.wavesurfer.on("region-updated", e => {
