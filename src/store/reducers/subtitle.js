@@ -7,7 +7,7 @@ export const initialState = {
   timeStamp: [],
   script: [],
   scriptTranslation: [],
-  preview: [],
+  preview: [], //not implemented in react project version
   indexActive: null,
   previousIndexActive: null,
   previousState: null
@@ -52,7 +52,14 @@ const subtitleReducer = (state = initialState, action) => {
     case actionTypes.UPDATE_TIMESTAMP:
       return {
         ...state,
-        timeStamp: action.timeStamp
+        timeStamp: state.timeStamp.map((time, i) =>
+          i === action.index
+            ? {
+                startMs: action.startMs !== undefined ? action.startMs : time.startMs,
+                endMs: action.endMs !== undefined ? action.endMs : time.startMs
+              }
+            : { ...time }
+        )
       };
     case actionTypes.UPDATE_SCRIPT:
       return {
@@ -94,7 +101,7 @@ const subtitleReducer = (state = initialState, action) => {
         ],
         indexActive: action.indexActive
       };
-    case actionTypes.REMOVE_EMPTY_LINES:
+    case actionTypes.UPDATE_ALL:
       return {
         ...state,
         timeStamp: action.timeStamp,
@@ -103,7 +110,7 @@ const subtitleReducer = (state = initialState, action) => {
         preview: action.preview,
         indexActive: action.indexActive
       };
-    case actionTypes.FIX_OVERLAPPING:
+    case actionTypes.SET_TIMESTAMP:
       return {
         ...state,
         timeStamp: action.timeStamp

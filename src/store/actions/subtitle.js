@@ -54,9 +54,9 @@ export const setSubtitleList = subtitleList => {
   };
 };
 
-export const updateTimestamp = timeStamp => {
+export const updateTimestamp = (index, startMs, endMs) => {
   return dispatch => {
-    dispatch({ type: actionTypes.UPDATE_TIMESTAMP, timeStamp });
+    dispatch({ type: actionTypes.UPDATE_TIMESTAMP, index, startMs, endMs });
   };
 };
 
@@ -84,7 +84,7 @@ export const updatePreview = preview => {
 
 export const removeLines = (begin, end) => {
   return (dispatch, getState) => {
-    const { indexActive, timeStamp } = getState();
+    const { indexActive, timeStamp } = getState().subtitle;
     const newLength = timeStamp.length - (end - begin + 1);
     const newIndexActive =
       indexActive < newLength ? indexActive : newLength ? 0 : null;
@@ -100,11 +100,12 @@ export const removeLines = (begin, end) => {
 
 export const removeEmptyLines = () => {
   return (dispatch, getState) => {
-    const timeStamp = getState().timeStamp.slice();
-    const script = getState().script.slice();
-    const scriptTranslation = getState().scriptTranslation.slice();
-    const preview = getState().preview.slice();
-    const { indexActive } = getState();
+    console.log(getState().subtitle);
+    const timeStamp = getState().subtitle.timeStamp.map(item => ({ ...item }));
+    const script = getState().subtitle.script.slice();
+    const scriptTranslation = getState().subtitle.scriptTranslation.slice();
+    const preview = getState().subtitle.preview.map(item => ({ ...item }));
+    const { indexActive } = getState().subtitle;
 
     let i = timeStamp.length;
     let newLength = timeStamp.length;
@@ -119,7 +120,7 @@ export const removeEmptyLines = () => {
     }
 
     dispatch({
-      type: actionTypes.REMOVE_EMPTY_LINES,
+      type: actionTypes.UPDATE_ALL,
       timeStamp,
       script,
       scriptTranslation,
@@ -128,14 +129,15 @@ export const removeEmptyLines = () => {
         ? null
         : indexActive < newLength
         ? indexActive
-        : newLength
+        : newLength - 1
     });
   };
 };
 
+//TO_FIX
 export const fixOverlapping = () => {
   return (dispatch, getState) => {
-    const timeStamp = getState().timeStamp.map((time, index) => {
+    const timeStamp = getState().subtitle.timeStamp.map((time, index) => {
       if (
         index !== timeStamp.length - 1 &&
         time.endMs > timeStamp[index + 1].startMs
@@ -146,7 +148,99 @@ export const fixOverlapping = () => {
       }
     });
 
-    dispatch({ type: actionTypes.SET_INDEX_ACTIVE, timeStamp });
+    dispatch({ type: actionTypes.SET_TIMESTAMP, timeStamp });
+  };
+};
+
+export const mergeToSentences = () => {
+  return (dispatch, getState) => {
+    const timeStamp = getState().subtitle.timeStamp.map(item => ({ ...item }));
+    const script = getState().subtitle.script.slice();
+    const scriptTranslation = getState().subtitle.scriptTranslation.slice();
+    const preview = getState().subtitle.preview.map(item => ({ ...item }));
+    const { indexActive } = getState().subtitle;
+
+    let i = timeStamp.length;
+    let newLength = timeStamp.length;
+
+    const regexEnd = /[^.?!)]$/g;
+    // const regexBegin = /^[a-z]/g;
+
+    while (i--) {
+      if (i === 0) {
+        break;
+      }
+      if (
+        script[i - 1].match(
+          regexEnd
+        ) /*&& script[i].sentence.match(regexBegin)*/
+      ) {
+        const newScript = script[i - 1].trim() + " " + script[i].trim();
+        if (newScript.length < this.state.maxCharSentence) {
+          timeStamp[i - 1] = {
+            startMs: timeStamp[i - 1].startMs,
+            endMs: timeStamp[i].endMs
+          };
+          timeStamp.splice(i, 1);
+          script[i - 1] = newScript;
+          script.splice(i, 1);
+          scriptTranslation[i - 1] =
+            scriptTranslation[i - 1].trim() + " " + scriptTranslation[i].trim();
+          scriptTranslation.splice(i, 1);
+          preview[i - 1] = {
+            en: preview[i - 1].en.trim() + " " + preview[i].en.trim(),
+            ko: preview[i - 1].ko.trim() + " " + preview[i].ko.trim(),
+            rpa: preview[i - 1].rpa.trim() + " " + preview[i].rpa.trim()
+          };
+          preview.splice(i, 1);
+          newLength--;
+        }
+      }
+    }
+    dispatch({
+      type: actionTypes.UPDATE_ALL,
+      timeStamp,
+      script,
+      scriptTranslation,
+      preview,
+      indexActive: !newLength
+        ? null
+        : indexActive < newLength
+        ? indexActive
+        : newLength - 1
+    });
+  };
+};
+
+export const shiftTimes = (forward, target, begin, end, time) => {
+  return (dispatch, getState) => {
+    if (forward === "backward") {
+      time = -time;
+    }
+    const timeStamp = getState().subtitle.timeStamp.map((item, index) => {
+      if (index >= begin && index < end) {
+        switch (target) {
+          case "start":
+            return {
+              ...time,
+              startMs: item.startMs + time >= 0 ? item.startMs + time : 0
+            };
+          case "end":
+            return {
+              ...time,
+              endMs: item.endMs + time >= 0 ? item.endMs + time : 0
+            };
+          default:
+            return {
+              startMs: item.startMs + time >= 0 ? item.startMs + time : 0,
+              endMs: item.endMs + time >= 0 ? item.endMs + time : 0
+            };
+        }
+      } else {
+        return { ...item };
+      }
+    });
+    dispatch({ type: actionTypes.SET_TIMESTAMP, timeStamp });
   };
 };
 

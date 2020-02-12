@@ -718,8 +718,7 @@ const mapDispatchToProps = dispatch => {
           scriptTranslation,
           preview
         )
-      ),
-    updateTimestamp: timeStamp => dispatch(actions.updateTimestamp(timeStamp))
+      )
   };
 };
 

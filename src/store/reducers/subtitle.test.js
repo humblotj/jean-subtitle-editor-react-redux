@@ -98,10 +98,12 @@ describe("subtitle reducer", () => {
   it("should handle UPDATE_TIMESTAMP", () => {
     expect(
       subtitleReducer(
-        { timeStamp: "" },
+        { timeStamp: [{ startMs: 1, endMs: 2 }] },
         {
           type: actionTypes.UPDATE_TIMESTAMP,
-          timeStamp: [{ startMs: 0, endMs: 1 }]
+          startMs: 0,
+          endMs: 1,
+          index: 0
         }
       )
     ).toEqual({

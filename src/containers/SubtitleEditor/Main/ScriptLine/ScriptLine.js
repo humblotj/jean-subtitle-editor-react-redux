@@ -74,10 +74,9 @@ class ScriptLine extends React.Component {
 
   startTimeChanged = event => {
     if (event.currentTarget.value.match(/^[0-5][0-9]:[0-5][0-9].[0-9]{2}/)) {
-      const { timeStamp, index } = this.props;
+      const { index } = this.props;
       const startTime = SubtitleParser.timeToMs(event.currentTarget.value);
-      timeStamp[index].startMs = startTime;
-      this.props.updateTimestamp([...timeStamp]);
+      this.props.updateTimestamp(index, startTime, null);
     } else {
       const startTime = SubtitleParser.msToTime(
         this.props.timeStamp[this.props.index].startMs
@@ -88,10 +87,9 @@ class ScriptLine extends React.Component {
 
   endTimeChanged = event => {
     if (event.currentTarget.value.match(/^[0-5][0-9]:[0-5][0-9].[0-9]{2}/)) {
-      const { timeStamp, index } = this.props;
+      const { index } = this.props;
       const endTime = SubtitleParser.timeToMs(event.currentTarget.value);
-      timeStamp[index].endMs = endTime;
-      this.props.updateTimestamp([...timeStamp]);
+      this.props.updateTimestamp(index, null, endTime);
     } else {
       const endTime = SubtitleParser.msToTime(
         this.props.timeStamp[this.props.index].endMs
@@ -306,7 +304,8 @@ const mapStateToProps = state => {
 
 const mapDispatchToProps = dispatch => {
   return {
-    updateTimestamp: timeStamp => dispatch(actions.updateTimestamp(timeStamp)),
+    updateTimestamp: (index, startMs, endMs) =>
+      dispatch(actions.updateTimestamp(index, startMs, endMs)),
     updateScript: (index, value) =>
       dispatch(actions.updateScript(index, value)),
     updateScriptTranslation: (index, value) =>

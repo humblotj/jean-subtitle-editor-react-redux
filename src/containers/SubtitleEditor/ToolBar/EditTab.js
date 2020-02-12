@@ -59,94 +59,24 @@ class EditTab extends React.Component {
     EventEmitter.dispatch("refreshRegion", null);
   };
 
-  mergeToSentences() {
+  mergeToSentences = () => {
     EventEmitter.dispatch("do", null);
-    const {
-      timeStamp,
-      script,
-      scriptTranslation,
-      preview,
-      indexActive
-    } = this.props;
-    let i = timeStamp.length;
-    const regexEnd = /[^.?!)]$/g;
-    // const regexBegin = /^[a-z]/g;
-    while (i--) {
-      if (i === 0) {
-        break;
-      }
-      if (
-        script[i - 1].match(
-          regexEnd
-        ) /*&& script[i].sentence.match(regexBegin)*/
-      ) {
-        const newScript = script[i - 1].trim() + " " + script[i].trim();
-        if (newScript.length < this.state.maxCharSentence) {
-          timeStamp[i - 1] = {
-            startMs: timeStamp[i - 1].startMs,
-            endMs: timeStamp[i].endMs
-          };
-          timeStamp.splice(i, 1);
-          script[i - 1] = newScript;
-          script.splice(i, 1);
-          scriptTranslation[i - 1] =
-            scriptTranslation[i - 1].trim() + " " + scriptTranslation[i].trim();
-          scriptTranslation.splice(i, 1);
-          preview[i - 1] = {
-            en: preview[i - 1].en.trim() + " " + preview[i].en.trim(),
-            ko: preview[i - 1].ko.trim() + " " + preview[i].ko.trim(),
-            rpa: preview[i - 1].rpa.trim() + " " + preview[i].rpa.trim()
-          };
-          preview.splice(i, 1);
-        }
-      }
-    }
-
-    this.props.translationSelected(
-      [...timeStamp],
-      [...script],
-      [...scriptTranslation],
-      [...preview]
-    );
-
-    if (indexActive > timeStamp.length - 1) {
-      this.props.setIndexActive(timeStamp.length - 1);
-    }
+    this.props.mergeToSentences();
+    EventEmitter.dispatch("refreshRegion", null);
   }
 
   shiftTimes = result => {
     this.setState({ openShiftTimes: false });
-    const { timeStamp } = this.props;
     if (result) {
       EventEmitter.dispatch("do", null);
 
-      if (result.forward === "backward") {
-        const time = -result.time;
-        for (let i = result.begin - 1; i <= result.end - 1; i++) {
-          if (result.target === "start" || result.target === "both") {
-            timeStamp[i].startMs += time;
-            if (timeStamp[i].startMs < 0) {
-              timeStamp[i].startMs = 0;
-            }
-          }
-          if (result.target === "end" || result.target === "both") {
-            timeStamp[i].endMs += time;
-            if (timeStamp[i].endMs < 0) {
-              timeStamp[i].endMs = 0;
-            }
-          }
-        }
-      } else {
-        for (let i = result.begin - 1; i <= result.end - 1; i++) {
-          if (result.target === "start" || result.target === "both") {
-            timeStamp[i].startMs += result.time;
-          }
-          if (result.target === "end" || result.target === "both") {
-            timeStamp[i].endMs += result.time;
-          }
-        }
-      }
-      this.props.updateTimestamp([...timeStamp]);
+      this.props.shiftTimes(
+        result.forward,
+        result.target,
+        result.begin,
+        result.end,
+        result.time
+      );
 
       EventEmitter.dispatch("refreshRegion", null);
     }
@@ -296,19 +226,12 @@ const mapStateToProps = state => {
 
 const mapDispatchToProps = dispatch => {
   return {
-    updateTimestamp: timeStamp => dispatch(actions.updateTimestamp(timeStamp)),
+    shiftTimes: (forward, target, begin, end, time) =>
+      dispatch(actions.shiftTimes(forward, target, begin, end, time)),
     removeLines: (begin, end) => dispatch(actions.removeLines(begin, end)),
     removeEmptyLines: () => dispatch(actions.removeEmptyLines()),
     fixOverlapping: () => dispatch(actions.fixOverlapping()),
-    translationSelected: (timeStamp, script, scriptTranslation, preview) =>
-      dispatch(
-        actions.translationSelected(
-          timeStamp,
-          script,
-          scriptTranslation,
-          preview
-        )
-      ),
+    mergeToSentences: () => dispatch(actions.mergeToSentences()),
     setIndexActive: indexActive => dispatch(actions.setIndexActive(indexActive))
   };
 };

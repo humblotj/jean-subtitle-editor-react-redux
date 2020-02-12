@@ -64,8 +64,8 @@ class Audiovizualiser extends React.Component {
     });
 
     this.wavesurfer.on("region-updated", e => {
-      that.props.timeStamp[e.id].startMs = Math.floor(e.start * 100) * 10;
-      that.props.timeStamp[e.id].endMs = Math.floor(e.end * 100) * 10;
+      const startMs = Math.floor(e.start * 100) * 10;
+      const endMs = Math.floor(e.end * 100) * 10;
 
       // save adjacent timestamp for resizing purpose
       if (that.adjacentTimeUpdated === false) {
@@ -77,7 +77,7 @@ class Audiovizualiser extends React.Component {
         }
         that.adjacentTimeUpdated = true;
       }
-      that.props.updateTimestamp([...that.props.timeStamp]);
+      that.props.updateTimestamp(e.id, startMs, endMs);
     });
 
     this.wavesurfer.on("region-update-end", e => {
@@ -449,7 +449,8 @@ const mapDispatchToProps = dispatch => {
   return {
     setWavesurfer: wavesurfer => dispatch(actions.setWavesurfer(wavesurfer)),
     setPause: pause => dispatch(actions.setPause(pause)),
-    updateTimestamp: timeStamp => dispatch(actions.updateTimestamp(timeStamp)),
+    updateTimestamp: (index, startMs, endMs) =>
+      dispatch(actions.updateTimestamp(index, startMs, endMs)),
     setIndexActive: indexActive =>
       dispatch(actions.setIndexActive(indexActive)),
     setTimeout: timeout => dispatch(actions.setTimeout(timeout)),
