@@ -200,13 +200,13 @@ export const mergeToSentences = maxChar => {
           ).trim();
           scriptTranslation.splice(i, 1);
           preview[i - 1] = {
-            en: (preview[i - 1].en.trim() + " " + preview[i].en.trim()).trim()
-            // ko: (preview[i - 1].ko.trim() + " " + preview[i].ko.trim()).trim(),
-            // rpa: (
-            //   preview[i - 1].rpa.trim() +
-            //   " " +
-            //   preview[i].rpa.trim()
-            // ).trim()
+            en: (preview[i - 1].en.trim() + " " + preview[i].en.trim()).trim(),
+            ko: (preview[i - 1].ko.trim() + " " + preview[i].ko.trim()).trim(),
+            rpa: (
+              preview[i - 1].rpa.trim() +
+              " " +
+              preview[i].rpa.trim()
+            ).trim()
           };
           preview.splice(i, 1);
           newLength--;

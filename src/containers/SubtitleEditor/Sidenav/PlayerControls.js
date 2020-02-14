@@ -1,15 +1,11 @@
 import React from "react";
 import { connect } from "react-redux";
-import { IconButton, Box, Slider } from "@material-ui/core";
-import {
-  PlayArrow as PlayArrowIcon,
-  Pause as PauseIcon,
-  VolumeMute as VolumeMuteIcon,
-  VolumeDown as VolumeDownIcon,
-  VolumeUp as VolumeUpIcon
-} from "@material-ui/icons";
+import { Box } from "@material-ui/core";
 
 import * as actions from "../../../store/actions/index";
+import AudioVolumeSlider from "../../../components/Sidenav/AudioVolumeSlider";
+import PlayButton from "../../../components/Sidenav/PlayButton";
+import ProgressSlider from "../../../components/Sidenav/ProgressSlider";
 
 export class PlayerControls extends React.Component {
   shouldComponentUpdate(nextProps, nextState) {
@@ -39,7 +35,7 @@ export class PlayerControls extends React.Component {
     }
   };
 
-  play = () => {
+  playHandler = () => {
     clearTimeout(this.props.timeout);
     this.props.setTimeout(null);
 
@@ -72,27 +68,20 @@ export class PlayerControls extends React.Component {
     if (audioVolume) {
       this.oldVolume = audioVolume;
       this.props.setVolume(0);
-      this.props.wavesurfer.setVolume(0);
     } else {
       if (!this.oldVolume) {
         this.oldVolume = 0.25;
       }
       this.props.setVolume(this.oldVolume);
-      this.props.wavesurfer.setVolume(this.oldVolume);
     }
   };
 
   render() {
     let { progress, paused, currentTime, duration, audioVolume } = this.props;
-    
+
     return (
       <div>
-        <Slider
-          value={progress}
-          onChange={this.seekTo}
-          aria-labelledby="progress-slider"
-          style={{ margin: "0 8px", width: "calc(100% - 16px)" }}
-        />
+        <ProgressSlider progress={progress} seekTo={this.seekTo} />
         <Box
           display="flex"
           flexDirection="row"
@@ -100,45 +89,16 @@ export class PlayerControls extends React.Component {
           style={{ marginRight: "8px" }}
         >
           <div>
-            <IconButton aria-label="play" size="small" onClick={this.play}>
-              {paused ? (
-                <PlayArrowIcon fontSize="inherit" />
-              ) : (
-                <PauseIcon fontSize="inherit" />
-              )}
-            </IconButton>
+            <PlayButton paused={paused} play={this.playHandler} />
             <span style={{ fontSize: "12px", marginTop: "5px" }}>
               {currentTime}/{duration}
             </span>
           </div>
-          <div style={{ display: "flex" }}>
-            <IconButton
-              aria-label="volume"
-              size="small"
-              onClick={this.toggleMute}
-              style={{ marginRight: "8px" }}
-            >
-              {audioVolume === 0 ? (
-                <VolumeMuteIcon fontSize="inherit" />
-              ) : audioVolume > 0.25 ? (
-                <VolumeUpIcon fontSize="inherit" />
-              ) : (
-                <VolumeDownIcon fontSize="inherit" />
-              )}
-            </IconButton>
-            <Slider
-              value={audioVolume}
-              onChange={(event, value) => {
-                this.props.wavesurfer.setVolume(value);
-                this.props.setVolume(value);
-              }}
-              min={0}
-              step={0.05}
-              max={0.5}
-              aria-labelledby="audio-slider"
-              style={{ width: "59px" }}
-            />
-          </div>
+          <AudioVolumeSlider
+            audioVolume={audioVolume}
+            setVolume={this.props.setVolume}
+            toggleMute={this.toggleMute}
+          />
         </Box>
       </div>
     );

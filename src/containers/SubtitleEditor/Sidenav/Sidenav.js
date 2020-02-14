@@ -4,7 +4,7 @@ import { connect } from "react-redux";
 import * as actions from "../../../store/actions/index";
 import VideoPlayer from "./VideoPlayer";
 import PlayerControls from "./PlayerControls";
-import ScriptPreview from "./ScriptPreview";
+import ScriptPreview from "../../../components/Sidenav/ScriptPreview";
 
 class Sidenav extends React.Component {
   constructor() {
@@ -43,6 +43,8 @@ class Sidenav extends React.Component {
 
   render() {
     const { options } = this.state;
+    const { script, scriptTranslation, indexActive } = this.props;
+
     if (options === null) {
       return null;
     }
@@ -50,7 +52,11 @@ class Sidenav extends React.Component {
       <div>
         <VideoPlayer options={options} />
         <PlayerControls />
-        <ScriptPreview />
+        <ScriptPreview
+          script={script}
+          scriptTranslation={scriptTranslation}
+          indexActive={indexActive}
+        />
       </div>
     );
   }
@@ -60,7 +66,10 @@ const mapStateToProps = state => {
   return {
     player: state.video.player,
     videoType: state.video.videoType,
-    url: state.video.url
+    url: state.video.url,
+    script: state.subtitle.script,
+    scriptTranslation: state.subtitle.scriptTranslation,
+    indexActive: state.subtitle.indexActive
   };
 };
 

@@ -5,8 +5,8 @@ import { Timer as TimerIcon } from "@material-ui/icons";
 
 import * as actions from "../../../store/actions/index";
 import { EventEmitter } from "../../../Utils/events";
-import RemoveLines from "../Main/Dialog/RemoveLines";
-import ShiftTimes from "../Main/Dialog/ShiftTimes";
+import RemoveLines from "../../../components/Dialog/RemoveLines";
+import ShiftTimes from "../../../components/Dialog/ShiftTimes";
 
 class EditTab extends React.Component {
   constructor() {

@@ -49,7 +49,11 @@ export const setWavesurfer = wavesurfer => {
 };
 
 export const setVolume = audioVolume => {
-  return dispatch => {
+  return (dispatch, getState) => {
+    const { wavesurfer } = getState().video;
+    if (wavesurfer) {
+      wavesurfer.setVolume(audioVolume);
+    }
     dispatch({ type: actionTypes.SET_VOLUME, audioVolume });
   };
 };
