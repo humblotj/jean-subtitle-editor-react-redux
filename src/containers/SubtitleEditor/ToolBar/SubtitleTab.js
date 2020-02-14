@@ -1,8 +1,6 @@
 import React from "react";
 import { connect } from "react-redux";
 import {
-  Button,
-  IconButton,
   Box,
   Divider,
   MenuItem,
@@ -12,17 +10,14 @@ import {
   Grow,
   Paper,
   Popper,
-  ClickAwayListener,
-  Select,
-  FormControl
+  ClickAwayListener
 } from "@material-ui/core";
 import {
   Subtitles as SubtitlesIcon,
   SubtitlesOutlined as SubtitlesOutlinedIcon,
   Folder as FolderIcon,
   Mic as MicIcon,
-  Translate as TranslateIcon,
-  SwapHoriz as SwapHorizIcon
+  Translate as TranslateIcon
 } from "@material-ui/icons";
 import axios from "axios";
 import * as FileSaver from "file-saver";
@@ -31,6 +26,8 @@ import * as actions from "../../../store/actions/index";
 import * as SubtitleParser from "../../../Utils/SubtitleParser";
 import * as Translate from "../../../Utils/Translate";
 import { EventEmitter } from "../../../Utils/events";
+import ButtonTextIcon from "../../../components/UI/ButtonTextIcon";
+import SwapLanguages from "../../../components/Toolbar/SwapLanguages";
 
 const languagesSupported = [
   { value: "ko", viewValue: "Korean" },
@@ -371,19 +368,13 @@ class SubtitleTab extends React.Component {
         alignItems="center"
         style={{ height: "60px", width: "max-content", minWidth: "100%" }}
       >
-        <Button ref={this.menuSubtitle} onClick={this.toggleSubtitle}>
-          <Box display="flex" flexDirection="column" alignItems="center">
-            <SubtitlesOutlinedIcon />
-            <span
-              style={{
-                letterSpacing: "-0.5px",
-                textTransform: "initial"
-              }}
-            >
-              Select Subtitle
-            </span>
-          </Box>
-        </Button>
+        <ButtonTextIcon
+          ref={this.menuSubtitle}
+          icon={SubtitlesOutlinedIcon}
+          text={"Select Subtitle"}
+          clickHandler={this.toggleSubtitle}
+          disabled={false}
+        />
         <Popper
           open={openMenuSubtitle}
           anchorEl={this.menuSubtitle.current}
@@ -452,23 +443,13 @@ class SubtitleTab extends React.Component {
           )}
         </Popper>
         <Divider orientation="vertical" />
-        <Button
+        <ButtonTextIcon
           ref={this.menuTranslation}
-          onClick={this.toggleTranslation}
+          icon={SubtitlesIcon}
+          text={"Select Translation"}
+          clickHandler={this.toggleTranslation}
           disabled={!this.props.timeStamp.length}
-        >
-          <Box display="flex" flexDirection="column" alignItems="center">
-            <SubtitlesIcon />
-            <span
-              style={{
-                letterSpacing: "-0.5px",
-                textTransform: "initial"
-              }}
-            >
-              Select Translation
-            </span>
-          </Box>
-        </Button>
+        />
         <Popper
           open={openMenuTranslation}
           anchorEl={this.menuTranslation.current}
@@ -526,61 +507,28 @@ class SubtitleTab extends React.Component {
           )}
         </Popper>
         <Divider orientation="vertical" />
-        <Button
-          onClick={this.translate}
+        <ButtonTextIcon
+          icon={TranslateIcon}
+          text={"Translate"}
+          clickHandler={this.translate}
           disabled={!this.props.timeStamp.length}
-        >
-          <Box display="flex" flexDirection="column" alignItems="center">
-            <TranslateIcon />
-            <span
-              style={{
-                letterSpacing: "-0.5px",
-                textTransform: "initial"
-              }}
-            >
-              Translate
-            </span>
-          </Box>
-        </Button>
-        <FormControl style={{ width: 120 }}>
-          <Select value={sourceLanguage} onChange={this.onSLSelected}>
-            {languagesSupported.map((lang, i) => (
-              <MenuItem key={i} value={lang.value}>
-                {lang.viewValue}
-              </MenuItem>
-            ))}
-          </Select>
-        </FormControl>
-        <IconButton aria-label="swap" size="small" onClick={this.swapLanguages}>
-          <SwapHorizIcon />
-        </IconButton>
-        <FormControl style={{ width: 120, marginRight: "8px" }}>
-          <Select value={targetLanguage} onChange={this.onTLSelected}>
-            {languagesSupported.map((lang, i) => (
-              <MenuItem key={i} value={lang.value}>
-                {lang.viewValue}
-              </MenuItem>
-            ))}
-          </Select>
-        </FormControl>
+        />
+        <SwapLanguages
+          languagesSupported={languagesSupported}
+          sourceLanguage={sourceLanguage}
+          targetLanguage={targetLanguage}
+          onSLSelected={this.onSLSelected}
+          onTLSelected={this.onTLSelected}
+          swapLanguages={this.swapLanguages}
+        />
         <Divider orientation="vertical" />
-        <Button
+        <ButtonTextIcon
           ref={this.exportSubtitle}
-          onClick={this.toggleExportSubtitle}
+          icon={SubtitlesIcon}
+          text={"Export Subtitle"}
+          clickHandler={this.toggleExportSubtitle}
           disabled={!this.props.timeStamp.length}
-        >
-          <Box display="flex" flexDirection="column" alignItems="center">
-            <SubtitlesOutlinedIcon />
-            <span
-              style={{
-                letterSpacing: "-0.5px",
-                textTransform: "initial"
-              }}
-            >
-              Export Subtitle
-            </span>
-          </Box>
-        </Button>
+        />
         <Popper
           open={openExportSubtitle}
           anchorEl={this.exportSubtitle.current}
@@ -616,23 +564,13 @@ class SubtitleTab extends React.Component {
           )}
         </Popper>
         <Divider orientation="vertical" />
-        <Button
+        <ButtonTextIcon
           ref={this.exportTranslation}
-          onClick={this.toggleExportTranslation}
+          icon={SubtitlesOutlinedIcon}
+          text={"Export Translation"}
+          clickHandler={this.toggleExportTranslation}
           disabled={!this.props.timeStamp.length}
-        >
-          <Box display="flex" flexDirection="column" alignItems="center">
-            <SubtitlesOutlinedIcon />
-            <span
-              style={{
-                letterSpacing: "-0.5px",
-                textTransform: "initial"
-              }}
-            >
-              Export Translation
-            </span>
-          </Box>
-        </Button>
+        />
         <Popper
           open={openExportTranslation}
           anchorEl={this.exportTranslation.current}

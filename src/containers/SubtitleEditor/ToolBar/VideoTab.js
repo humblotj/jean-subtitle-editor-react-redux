@@ -1,16 +1,15 @@
 import React from "react";
 import { connect } from "react-redux";
-import { Button, Input, Box, Divider, IconButton } from "@material-ui/core";
+import { Box, Divider } from "@material-ui/core";
 import {
   VideoCall as VideoCallIcon,
-  YouTube as YouTubeIcon,
-  Close as CloseIcon,
-  FileCopy as FileCopyIcon
+  YouTube as YouTubeIcon
 } from "@material-ui/icons";
-import copy from "copy-to-clipboard";
 
 import * as actions from "../../../store/actions/index";
 import { EventEmitter } from "../../../Utils/events";
+import ButtonTextIcon from "../../../components/UI/ButtonTextIcon";
+import InputCopy from "../../../components/UI/InputCopy";
 
 class VideoTab extends React.Component {
   constructor() {
@@ -68,15 +67,6 @@ class VideoTab extends React.Component {
     );
   };
 
-  copyInput = () => {
-    if (
-      this.linkInput.current.children[0].value &&
-      copy(this.linkInput.current.children[0].value)
-    ) {
-      this.props.openSnackbar("Copied to clipboard.");
-    }
-  };
-
   render() {
     return (
       <Box
@@ -92,60 +82,24 @@ class VideoTab extends React.Component {
           ref={this.videoInput}
           onChange={this.onOpenVideo}
         />
-        <Button onClick={() => this.videoInput.current.click()}>
-          <Box display="flex" flexDirection="column" alignItems="center">
-            <VideoCallIcon />
-            <span
-              style={{
-                letterSpacing: "-0.5px",
-                textTransform: "initial"
-              }}
-            >
-              Open Video
-            </span>
-          </Box>
-        </Button>
+        <ButtonTextIcon
+          icon={VideoCallIcon}
+          text={"Open Video"}
+          clickHandler={() => this.videoInput.current.click()}
+          disabled={false}
+        />
         <Divider orientation="vertical" />
-        <Button onClick={this.onPlayYTLink}>
-          <Box display="flex" flexDirection="column" alignItems="center">
-            <YouTubeIcon />
-            <span
-              style={{
-                letterSpacing: "-0.5px",
-                textTransform: "initial"
-              }}
-            >
-              Play Video
-            </span>
-          </Box>
-        </Button>
-        <form noValidate autoComplete="off">
-          <Input
-            placeholder="Youtube Link"
-            value={this.props.youtubeLink}
-            onChange={event =>
-              this.props.setYoutubeLink(event.currentTarget.value)
-            }
-            ref={this.linkInput}
-            endAdornment={
-              <IconButton
-                aria-label="delete"
-                size="small"
-                onClick={() => this.props.setYoutubeLink("")}
-              >
-                <CloseIcon fontSize="inherit" />
-              </IconButton>
-            }
-          />
-        </form>
-        <IconButton
-          aria-label="copy"
-          size="small"
-          onClick={this.copyInput}
-          disabled={!this.props.youtubeLink}
-        >
-          <FileCopyIcon />
-        </IconButton>
+        <ButtonTextIcon
+          icon={YouTubeIcon}
+          text={"Play Video"}
+          clickHandler={this.onPlayYTLink}
+          disabled={false}
+        />
+        <InputCopy
+          placeholder={"Youtube Link"}
+          value={this.props.youtubeLink}
+          setValue={this.props.setYoutubeLink}
+        />
         <Divider orientation="vertical" />
       </Box>
     );
@@ -167,9 +121,7 @@ const mapDispatchToProps = dispatch => {
     setYoutubeLink: youtubeLink =>
       dispatch(actions.setYoutubeLink(youtubeLink)),
     videoSelected: (videoId, videoType, url) =>
-      dispatch(actions.videoSelected(videoId, videoType, url)),
-    setSubtitleList: subtitleList =>
-      dispatch(actions.setSubtitleList(subtitleList))
+      dispatch(actions.videoSelected(videoId, videoType, url))
   };
 };
 

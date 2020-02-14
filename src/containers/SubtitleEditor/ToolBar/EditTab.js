@@ -1,12 +1,14 @@
 import React from "react";
 import { connect } from "react-redux";
-import { Button, Input, Box, Divider } from "@material-ui/core";
+import { Input, Box, Divider } from "@material-ui/core";
 import { Timer as TimerIcon } from "@material-ui/icons";
 
 import * as actions from "../../../store/actions/index";
 import { EventEmitter } from "../../../Utils/events";
 import RemoveLines from "../../../components/Dialog/RemoveLines";
 import ShiftTimes from "../../../components/Dialog/ShiftTimes";
+import ButtonText from "../../../components/UI/ButtonText";
+import ButtonTextIcon from "../../../components/UI/ButtonTextIcon";
 
 class EditTab extends React.Component {
   constructor() {
@@ -90,73 +92,28 @@ class EditTab extends React.Component {
         alignItems="center"
         style={{ height: "60px", width: "max-content" }}
       >
-        <Button
-          onClick={() => this.setState({ openRemoveLines: true })}
+        <ButtonText
+          text={"Remove\nMultiple Lines"}
+          clickHandler={() => this.setState({ openRemoveLines: true })}
           disabled={!this.props.timeStamp.length}
-        >
-          <Box
-            display="flex"
-            flexDirection="column"
-            alignItems="center"
-            style={{ whiteSpace: "pre-wrap" }}
-          >
-            <span
-              style={{
-                letterSpacing: "-0.5px",
-                textTransform: "initial"
-              }}
-            >
-              {"Remove\nMultiple Lines"}
-            </span>
-          </Box>
-        </Button>
+        />
         <RemoveLines
           length={this.props.timeStamp.length}
           open={this.state.openRemoveLines}
           onClose={this.removeMultipleLines}
         />
         <Divider orientation="vertical" />
-        <Button
-          onClick={this.removeEmptyLines}
+        <ButtonText
+          text={"Remove\n Empty Lines"}
+          clickHandler={this.removeEmptyLines}
           disabled={!this.props.timeStamp.length}
-        >
-          <Box
-            display="flex"
-            flexDirection="column"
-            alignItems="center"
-            style={{ whiteSpace: "pre-wrap" }}
-          >
-            <span
-              style={{
-                letterSpacing: "-0.5px",
-                textTransform: "initial"
-              }}
-            >
-              {"Remove\n Empty Lines"}
-            </span>
-          </Box>
-        </Button>
+        />
         <Divider orientation="vertical" />
-        <Button
-          onClick={this.fixOverlapping}
+        <ButtonText
+          text={"Fix Overlapping\nLines"}
+          clickHandler={this.fixOverlapping}
           disabled={!this.props.timeStamp.length}
-        >
-          <Box
-            display="flex"
-            flexDirection="column"
-            alignItems="center"
-            style={{ whiteSpace: "pre-wrap" }}
-          >
-            <span
-              style={{
-                letterSpacing: "-0.5px",
-                textTransform: "initial"
-              }}
-            >
-              {"Fix Overlapping\nLines"}
-            </span>
-          </Box>
-        </Button>
+        />
         <Divider orientation="vertical" />
         <Input
           type="number"
@@ -166,43 +123,18 @@ class EditTab extends React.Component {
           }
           style={{ width: "50px", marginLeft: "8px" }}
         />
-        <Button
-          onClick={this.mergeToSentences}
+        <ButtonText
+          text={"Merge to\nsentences"}
+          clickHandler={this.mergeToSentences}
           disabled={!this.props.timeStamp.length}
-        >
-          <Box
-            display="flex"
-            flexDirection="column"
-            alignItems="center"
-            style={{ whiteSpace: "pre-wrap" }}
-          >
-            <span
-              style={{
-                letterSpacing: "-0.5px",
-                textTransform: "initial"
-              }}
-            >
-              {"Merge to\nsentences"}
-            </span>
-          </Box>
-        </Button>
+        />
         <Divider orientation="vertical" />
-        <Button
-          onClick={() => this.setState({ openShiftTimes: true })}
+        <ButtonTextIcon
+          text={"Shift Times"}
+          icon={TimerIcon}
+          clickHandler={() => this.setState({ openShiftTimes: true })}
           disabled={!this.props.timeStamp.length}
-        >
-          <Box display="flex" flexDirection="column" alignItems="center">
-            <TimerIcon />
-            <span
-              style={{
-                letterSpacing: "-0.5px",
-                textTransform: "initial"
-              }}
-            >
-              Shift Times
-            </span>
-          </Box>
-        </Button>
+        />
         <ShiftTimes
           length={this.props.timeStamp.length}
           open={this.state.openShiftTimes}
@@ -216,11 +148,7 @@ class EditTab extends React.Component {
 
 const mapStateToProps = state => {
   return {
-    timeStamp: state.subtitle.timeStamp,
-    script: state.subtitle.script,
-    scriptTranslation: state.subtitle.scriptTranslation,
-    preview: state.subtitle.preview,
-    indexActive: state.subtitle.indexActive
+    timeStamp: state.subtitle.timeStamp
   };
 };
 
@@ -231,9 +159,7 @@ const mapDispatchToProps = dispatch => {
     removeLines: (begin, end) => dispatch(actions.removeLines(begin, end)),
     removeEmptyLines: () => dispatch(actions.removeEmptyLines()),
     fixOverlapping: () => dispatch(actions.fixOverlapping()),
-    mergeToSentences: maxChar =>
-      dispatch(actions.mergeToSentences(maxChar)),
-    setIndexActive: indexActive => dispatch(actions.setIndexActive(indexActive))
+    mergeToSentences: maxChar => dispatch(actions.mergeToSentences(maxChar))
   };
 };
 

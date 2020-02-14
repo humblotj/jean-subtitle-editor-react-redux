@@ -1,6 +1,6 @@
 import React from "react";
 import { connect } from "react-redux";
-import { Button, Box, Divider } from "@material-ui/core";
+import { Box, Divider } from "@material-ui/core";
 import {
   Redo as RedoIcon,
   Undo as UndoIcon,
@@ -10,6 +10,7 @@ import {
 import * as actions from "../../../store/actions/index";
 import { EventEmitter } from "../../../Utils/events";
 import { databaseRef } from "../../../firebase";
+import ButtonTextIcon from "../../../components/UI/ButtonTextIcon";
 
 class CommonTab extends React.Component {
   constructor() {
@@ -211,50 +212,26 @@ class CommonTab extends React.Component {
     return (
       <Box display="flex" flexDirection="row" style={{ height: "60px" }}>
         <Divider orientation="vertical" />
-        <Button
-          onClick={this.saveProject}
+        <ButtonTextIcon
+          icon={SaveIcon}
+          text={"Save Project"}
+          clickHandler={this.saveProject}
           disabled={!this.props.timeStamp.length}
-        >
-          <Box display="flex" flexDirection="column" alignItems="center">
-            <SaveIcon />
-            <span
-              style={{
-                letterSpacing: "-0.5px",
-                textTransform: "initial"
-              }}
-            >
-              Save Project
-            </span>
-          </Box>
-        </Button>
+        />
         <Divider orientation="vertical" />
-        <Button onClick={this.undo} disabled={!showUndo}>
-          <Box display="flex" flexDirection="column" alignItems="center">
-            <UndoIcon />
-            <span
-              style={{
-                letterSpacing: "-0.5px",
-                textTransform: "initial"
-              }}
-            >
-              Undo
-            </span>
-          </Box>
-        </Button>
+        <ButtonTextIcon
+          icon={UndoIcon}
+          text={"Undo"}
+          clickHandler={this.undo}
+          disabled={!showUndo}
+        />
         <Divider orientation="vertical" />
-        <Button onClick={this.redo} disabled={!showRedo}>
-          <Box display="flex" flexDirection="column" alignItems="center">
-            <RedoIcon />
-            <span
-              style={{
-                letterSpacing: "-0.5px",
-                textTransform: "initial"
-              }}
-            >
-              Redo
-            </span>
-          </Box>
-        </Button>
+        <ButtonTextIcon
+          icon={RedoIcon}
+          text={"Redo"}
+          clickHandler={this.redo}
+          disabled={!showRedo}
+        />
       </Box>
     );
   }

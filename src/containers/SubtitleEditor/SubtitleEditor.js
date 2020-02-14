@@ -12,7 +12,7 @@ import { EventEmitter } from "../../Utils/events";
 import TabToolbar from "../../components/TabToolBar";
 import HomeTab from "./ToolBar/HomeTab";
 import VideoTab from "./ToolBar/VideoTab";
-import SimpleSnackbar from "../../components/SimpleSnackBar";
+import SimpleSnackbar from "../../components/UI/SimpleSnackBar";
 import FixedDrawer from "../../components/FixedDrawer";
 import Sidenav from "./Sidenav/Sidenav";
 import Main from "./Main/Main";

@@ -1,25 +1,23 @@
 import React from "react";
 import { connect } from "react-redux";
-import { Button, Input, Box, Divider, IconButton } from "@material-ui/core";
+import { Box, Divider } from "@material-ui/core";
 import {
   GetApp as GetAppIcon,
-  Close as CloseIcon,
-  FileCopy as FileCopyIcon,
   AssignmentReturned as AssignmentReturnedIcon
 } from "@material-ui/icons";
-import copy from "copy-to-clipboard";
 import * as JSZip from "jszip";
 import * as FileSaver from "file-saver";
 
 import * as actions from "../../../store/actions/index";
 import * as SubtitleParser from "../../../Utils/SubtitleParser";
 import { EventEmitter } from "../../../Utils/events";
+import ButtonTextIcon from "../../../components/UI/ButtonTextIcon";
+import InputCopy from "../../../components/UI/InputCopy";
 
 class HomeTab extends React.Component {
   constructor() {
     super();
 
-    this.videoInput = React.createRef();
     this.keyInput = React.createRef();
     this.nameInput = React.createRef();
 
@@ -74,24 +72,6 @@ class HomeTab extends React.Component {
     });
   };
 
-  copyKey = () => {
-    if (
-      this.keyInput.current.children[0].value &&
-      copy(this.keyInput.current.children[0].value)
-    ) {
-      this.props.openSnackbar("Copied to clipboard.");
-    }
-  };
-
-  copyName = () => {
-    if (
-      this.nameInput.current.children[0].value &&
-      copy(this.nameInput.current.children[0].value)
-    ) {
-      this.props.openSnackbar("Copied to clipboard.");
-    }
-  };
-
   loadProject = () => {
     EventEmitter.dispatch("loadProject", this.state.projectKeyTmp);
     EventEmitter.dispatch("changeURL", this.state.projectKeyTmp);
@@ -105,91 +85,30 @@ class HomeTab extends React.Component {
         alignItems="center"
         style={{ height: "60px", width: "max-content" }}
       >
-        <Button onClick={this.loadProject} disabled={!this.state.projectKeyTmp}>
-          <Box display="flex" flexDirection="column" alignItems="center">
-            <GetAppIcon />
-            <span
-              style={{
-                letterSpacing: "-0.5px",
-                textTransform: "initial"
-              }}
-            >
-              Load Project
-            </span>
-          </Box>
-        </Button>
-        <form noValidate autoComplete="off">
-          <Input
-            placeholder="Project Key"
-            value={this.state.projectKeyTmp}
-            onChange={event =>
-              this.setState({ projectKeyTmp: event.currentTarget.value })
-            }
-            ref={this.keyInput}
-            endAdornment={
-              <IconButton
-                aria-label="delete"
-                size="small"
-                onClick={() => this.setState({ projectKeyTmp: "" })}
-              >
-                <CloseIcon fontSize="inherit" />
-              </IconButton>
-            }
-          />
-        </form>
-        <IconButton
-          aria-label="copy"
-          size="small"
-          onClick={this.copyKey}
+        <ButtonTextIcon
+          icon={GetAppIcon}
+          text={"Load Project"}
+          clickHandler={this.loadProject}
           disabled={!this.state.projectKeyTmp}
-        >
-          <FileCopyIcon />
-        </IconButton>
+        />
+        <InputCopy
+          placeholder={"Project Key"}
+          value={this.state.projectKeyTmp}
+          setValue={value => this.setState({ projectKeyTmp: value })}
+        />
+        <Divider orientation="vertical" style={{ marginRight: "8px" }} />
+        <InputCopy
+          placeholder={"Project Name"}
+          value={this.props.projectName}
+          setValue={this.props.setProjectName}
+        />
         <Divider orientation="vertical" />
-        <form noValidate autoComplete="off" style={{ marginLeft: "8px" }}>
-          <Input
-            placeholder="Project Name"
-            value={this.props.projectName}
-            onChange={event =>
-              this.props.setProjectName(event.currentTarget.value)
-            }
-            ref={this.nameInput}
-            endAdornment={
-              <IconButton
-                aria-label="delete"
-                size="small"
-                onClick={() => this.props.setProjectName("")}
-              >
-                <CloseIcon fontSize="inherit" />
-              </IconButton>
-            }
-          />
-        </form>
-        <IconButton
-          aria-label="copy"
-          size="small"
-          onClick={this.copyName}
-          disabled={!this.props.projectName}
-        >
-          <FileCopyIcon />
-        </IconButton>
-        <Divider orientation="vertical" />
-        <Button
-          onClick={() => this.downloadProject}
+        <ButtonTextIcon
+          icon={AssignmentReturnedIcon}
+          text={"Download Project"}
+          clickHandler={this.onDownloadProject}
           disabled={!this.props.timeStamp.length}
-        >
-          <Box display="flex" flexDirection="column" alignItems="center">
-            <AssignmentReturnedIcon />
-            <span
-              style={{
-                letterSpacing: "-0.5px",
-                textTransform: "initial"
-              }}
-            >
-              Download Project
-            </span>
-          </Box>
-        </Button>
+        />
         <Divider orientation="vertical" />
       </Box>
     );
@@ -208,11 +127,6 @@ const mapStateToProps = state => {
 
 const mapDispatchToProps = dispatch => {
   return {
-    openSnackbar: message => dispatch(actions.openSnackbar(message)),
-    videoSelected: (videoId, videoType, url) =>
-      dispatch(actions.videoSelected(videoId, videoType, url)),
-    setSubtitleList: subtitleList =>
-      dispatch(actions.setSubtitleList(subtitleList)),
     setProjectName: projectName => dispatch(actions.setProjectName(projectName))
   };
 };

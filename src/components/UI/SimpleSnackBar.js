@@ -2,7 +2,7 @@ import React from "react";
 import Snackbar from "@material-ui/core/Snackbar";
 import { useDispatch, useSelector } from "react-redux";
 
-import { closeSnackbar } from "../store/actions/snackbar";
+import { closeSnackbar } from "../../store/actions/snackbar";
 
 export default function SimpleSnackbar() {
   const dispatch = useDispatch();
